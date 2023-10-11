@@ -1,10 +1,10 @@
-import express, { type Request, type Response } from 'express'
+import express from 'express'
 import handlebars from 'express-handlebars'
 import path from 'path'
 
 import handlebarsHelpers from './helpers/handlebars-helpers'
 
-import productData from './data/product.json'
+import router from './routes'
 
 const app = express()
 const port = 3000
@@ -13,11 +13,7 @@ app.engine('hbs', handlebars({ defaultLayout: 'main', extname: '.hbs', helpers: 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
 
-// app.use(pages)
-
-app.get('/', (req: Request, res: Response) => {
-  res.render('home', { productData })
-})
+app.use(router)
 
 app.listen(port, () => {
   console.log(`server is listening at http://localhost:${port}`)
