@@ -10,11 +10,14 @@
     "rootDir": ".",
     "outDir": "build",
     "sourceMap": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "resolveJsonModule": true,
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.json",
     "migrations/*.ts",
     "test/**/*.ts"
   ]
 }
+
