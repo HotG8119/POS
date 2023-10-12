@@ -13,7 +13,7 @@ const handlebars = require('express-handlebars')
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
 // const { getUser } = require('./helpers/auth-helpers')
 
-// const { pages } = require('./routes')
+const { pages } = require('./routes')
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -36,9 +36,7 @@ app.use(express.urlencoded({ extended: true }))
 //   next()
 // })
 
-const orderController = require('./controllers/order-controller')
-// app.use(pages)
-app.get('/', orderController.getProduct)
+app.use(pages)
 
 app.listen(port, () => {
   console.info(`Example app listening on http://localhost:${port} !`)
