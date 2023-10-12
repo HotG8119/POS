@@ -1,6 +1,6 @@
 const adminController = {
   getProducts: (req, res) => {
-    res.render('admin/products')
+    res.render('admin/index')
   }
 }
 
