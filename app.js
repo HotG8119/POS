@@ -11,7 +11,7 @@ const passport = require('./config/passport')
 // const methodOverride = require('method-override')
 
 const handlebarsHelpers = require('./helpers/handlebars-helpers')
-// const { getUser } = require('./helpers/auth-helpers')
+const { getUser } = require('./helpers/auth-helpers')
 
 const { pages } = require('./routes')
 
@@ -32,7 +32,7 @@ app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
   res.locals.error_messages = req.flash('error_messages')
-  //   res.locals.user = getUser(req)
+  res.locals.user = getUser(req)
   next()
 })
 

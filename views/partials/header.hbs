@@ -23,8 +23,14 @@
             </ul>
 
             <div class="text-end">
-                <a href="/login" method="get" class="btn btn-outline-light">Login</a>
+                {{#if user.isAdmin}}
+                <a href="/admin" method="get" class="btn btn-outline-light">後台</a>
+                {{/if}}
+                {{#if user}}
                 <a href="/logout" method="get" class="btn btn-outline-light">Logout</a>
+                {{else}}
+                <a href="/login" method="get" class="btn btn-outline-light">Login</a>
+                {{/if}}
             </div>
         </div>
     </div>

@@ -1,5 +1,6 @@
 const orderController = {
-  getProduct: (req, res) => {
+  getProducts: (req, res) => {
+    console.log(res)
     res.render('products')
   }
 }
