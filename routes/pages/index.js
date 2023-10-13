@@ -10,10 +10,12 @@ const userController = require('../../controllers/user-controller')
 
 router.use('/admin', admin)
 
-router.get('/signup', authenticatedAdmin, userController.signUpPage)
-router.post('/signup', authenticatedAdmin, userController.signUp)
+router.get('/signup', userController.signUpPage)
+router.post('/signup', userController.signUp)
+// router.get('/signup', authenticatedAdmin, userController.signUpPage)
+// router.post('/signup', authenticatedAdmin, userController.signUp)
 router.get('/login', userController.logInPage)
-router.post('/login', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.logIn)
+router.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), userController.logIn)
 router.get('/logout', userController.logout)
 
 router.get('/products', authenticated, orderController.getProducts)

@@ -1,0 +1,40 @@
+<h1>餐點清單</h1>
+<a href='/admin/products/create'>
+    <button type="button" class="btn btn-primary">新增餐點</button>
+</a>
+<br />
+<br />
+<table class="table align-middle">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">名稱</th>
+            <th scope="col">價格</th>
+            <th scope="col">提供狀態</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each products}}
+        <tr>
+            <th scope="row">{{this.id}}</th>
+            <td>{{this.name}}</td>
+            <td>
+                <button type="button" class="btn btn-link">
+                    <a class="btn btn-link link-primary" href="/admin/products/{{this.id}}">
+                        詳細
+                    </a>
+                </button>
+                <button type="button" class="btn btn-link">
+                    <a class="btn btn-link link-primary" href="/admin/products/{{this.id}}/edit">
+                        修改
+                    </a>
+                </button>
+                <form action="/admin/products/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-link link-danger">刪除</button>
+                </form>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

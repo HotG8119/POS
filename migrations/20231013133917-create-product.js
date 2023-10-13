@@ -23,6 +23,9 @@ module.exports = {
       tags: {
         type: Sequelize.STRING
       },
+      image: {
+        type: Sequelize.STRING
+      },
       is_available: {
         // 預設值為true
         defaultValue: true,
