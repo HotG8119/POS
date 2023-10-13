@@ -3,22 +3,23 @@ const { User } = require('../models')
 
 const userServices = {
   signUp: async (req, cb) => {
-    console.log(req.body)
+    const { name, email, password, passwordCheck, admin } = req.body
+    if (!name || !email || !password || !passwordCheck) throw new Error('所有欄位都是必填！')
     try {
-      if (req.body.password !== req.body.passwordCheck) throw new Error('兩次密碼輸入不同！')
+      if (password !== passwordCheck) throw new Error('兩次密碼輸入不同！')
 
-      const user = await User.findOne({ where: { email: req.body.email } })
+      const user = await User.findOne({ where: { email } })
       if (user) throw new Error('信箱已註冊！')
 
       const hash = await bcrypt.hash(req.body.password, 10)
       await User.create({
-        name: req.body.name,
-        email: req.body.email,
+        name,
+        email,
         password: hash,
-        isAdmin: !!req.body.admin
+        isAdmin: !!admin
       })
 
-      //   req.flash('success_messages', '成功註冊帳號！')
+      req.flash('success_messages', '成功註冊帳號！')
       return cb(null)
     } catch (err) {
       return cb(err)
