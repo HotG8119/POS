@@ -15,9 +15,11 @@
 </div>
 <div class="form-row mb-3">
     <label class="form-label" for="image">圖片</label>
-    <input class="form-control" type="text" name="image" id="image" placeholder="圖片連結" value="{{product.image}}" {{#if
+    <input class="form-control" type="file" class="form-control-file" id="image" name="image" {{#if
         product}}readonly{{/if}}>
 </div>
+<img class="img-responsive center-block" src="{{product.image}}"
+    style="width: 250px; margin-bottom: 25px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
 <div class="form-row mb-3">
     <label class="form-label" for="isAvailable">是否供應</label>
     <select class="form-control" name="isAvailable" id="isAvailable" {{#if product}}disabled{{/if}}>

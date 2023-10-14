@@ -2,7 +2,7 @@
 //   require('dotenv').config()
 // }
 
-// const path = require('path')
+const path = require('path')
 const express = require('express')
 const handlebars = require('express-handlebars')
 const flash = require('connect-flash')
@@ -27,7 +27,7 @@ app.use(session({ secret: SESSION_SECRET, resave: false, saveUninitialized: fals
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(methodOverride('_method'))
-// app.use('/upload', express.static(path.join(__dirname, 'upload')))
+app.use('/upload', express.static(path.join(__dirname, 'upload')))
 app.use(flash())
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')

@@ -1,5 +1,6 @@
 // const bcrypt = require('bcryptjs')
 const { Product } = require('../models')
+const { localFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
   getProducts: async (req, cb) => {
@@ -15,15 +16,17 @@ const adminServices = {
     }
   },
   postProduct: async (req, cb) => {
-    const { name, price, description, image, isAvailable } = req.body
-    console.log(req.body)
+    const { name, price, description, isAvailable } = req.body
     if (!name || !price) throw new Error('名稱與價錢為必填！')
+    const { file } = req
+
     try {
+      const localFile = await localFileHandler(file)
       await Product.create({
         name,
         price,
         description,
-        image,
+        image: localFile,
         isAvailable
       })
       req.flash('success_messages', '成功新增商品！')
@@ -48,15 +51,15 @@ const adminServices = {
     try {
       const product = await Product.findByPk(req.params.id)
       if (!product) throw new Error('找不到該商品！')
-      const { name, price, description, image, isAvailable } = req.body
-      console.log('id', req.params.id)
-      console.log('req.body', req.body)
+      const { name, price, description, isAvailable } = req.body
       if (!name || !price) throw new Error('名稱與價錢為必填！')
+      const { file } = req
+      const localFile = await localFileHandler(file)
       await product.update({
         name,
         price,
         description,
-        image,
+        image: localFile || product.image,
         isAvailable
       })
       req.flash('success_messages', '成功更新商品！')
