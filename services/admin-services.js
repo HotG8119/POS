@@ -64,6 +64,17 @@ const adminServices = {
     } catch (err) {
       return cb(err)
     }
+  },
+  deleteProduct: async (req, cb) => {
+    try {
+      const product = await Product.findByPk(req.params.id)
+      if (!product) throw new Error('找不到該商品！')
+      await product.destroy()
+      req.flash('success_messages', '成功刪除商品！')
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
   }
 }
 

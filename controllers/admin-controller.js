@@ -32,6 +32,12 @@ const adminController = {
       if (err) return next(err)
       return res.redirect(`/admin/products/${req.params.id}`)
     })
+  },
+  deleteProduct: (req, res, next) => {
+    adminServices.deleteProduct(req, (err, data) => {
+      if (err) return next(err)
+      return res.redirect('/admin/products')
+    })
   }
 }
 
