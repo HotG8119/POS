@@ -11,13 +11,26 @@ const adminController = {
       return res.render('admin/products', { products: data })
     })
   },
-  getCraeteProductPage: (req, res) => {
+  getCreateProductPage: (req, res) => {
     res.render('admin/create-product')
   },
-  createProduct: (req, res, next) => {
-    adminServices.createProduct(req, (err, data) => {
+  postProduct: (req, res, next) => {
+    adminServices.postProduct(req, (err, data) => {
       if (err) return next(err)
       return res.redirect('/admin/products')
+    })
+  },
+  getProduct: (req, res, next) => {
+    adminServices.getProduct(req, (err, data) => {
+      console.log(data)
+      if (err) return next(err)
+      return res.render('admin/product', { product: data })
+    })
+  },
+  putProduct: (req, res, next) => {
+    adminServices.putProduct(req, (err, data) => {
+      if (err) return next(err)
+      return res.redirect(`/admin/products/${req.params.id}`)
     })
   }
 }

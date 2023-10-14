@@ -1,0 +1,68 @@
+<form action="/admin/products/{{product.id}}?_method=PUT" method="POST">
+
+    <div class="mb-4 text-center">
+        <h1 class="h3 font-weight-normal mb-3">商品資訊</h1>
+    </div>
+    {{> admin-product-form}}
+
+    <button type="button" id="edit-product" class="btn btn-warning">修改商品</button>
+    <button type="button" id="submit-edit-product" class="btn btn-primary" data-bs-toggle="modal"
+        data-bs-target="#submitButtonModal" hidden>儲存修改</button>
+    <button type="button" id="cancel-edit-product" class="btn btn-danger" hidden>取消修改</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="submitButtonModal" tabindex="-1" aria-labelledby="submitButtonModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">確定修改嗎？</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">確認</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <a href="/admin/products" class="btn btn-secondary">回到清單</a>
+</form>
+
+
+
+<script>
+    const editButton = document.getElementById('edit-product');
+    const submitButton = document.getElementById('submit-edit-product');
+    const cancelButton = document.getElementById('cancel-edit-product');
+
+    const name = document.getElementById('name');
+    const price = document.getElementById('price');
+    const description = document.getElementById('description');
+    const image = document.getElementById('image');
+    const isAvailable = document.getElementById('isAvailable');
+
+    editButton.addEventListener('click', () => {
+        name.removeAttribute('readonly');
+        price.removeAttribute('readonly');
+        description.removeAttribute('readonly');
+        image.removeAttribute('readonly');
+        isAvailable.removeAttribute('disabled');
+        submitButton.hidden = false;
+        cancelButton.hidden = false;
+        editButton.hidden = true;
+    });
+
+    cancelButton.addEventListener('click', () => {
+        name.setAttribute('readonly', true);
+        price.setAttribute('readonly', true);
+        description.setAttribute('readonly', true);
+        image.setAttribute('readonly', true);
+        isAvailable.setAttribute('disabled', true);
+        submitButton.hidden = true;
+        cancelButton.hidden = true;
+        editButton.hidden = false;
+    })
+</script>

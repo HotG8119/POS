@@ -1,0 +1,28 @@
+<div class="form-row mb-3">
+    <label class="form-label" for="name">名稱</label>
+    <input class="form-control" type="text" name="name" id="name" placeholder="餐點名稱" value="{{product.name}}" max="20"
+        required {{#if product}}readonly{{/if}}>
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="price">價錢</label>
+    <input class="form-control" type="number" name="price" id="price" placeholder="餐點價錢" value="{{product.price}}"
+        min="0" max="99999" required {{#if product}}readonly{{/if}}>
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="description">商品資訊</label>
+    <textarea class="form-control" id="description" name="description" rows="3" maxlength="200" {{#if
+        product}}readonly{{/if}}>{{product.description}}</textarea>
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="image">圖片</label>
+    <input class="form-control" type="text" name="image" id="image" placeholder="圖片連結" value="{{product.image}}" {{#if
+        product}}readonly{{/if}}>
+</div>
+<div class="form-row mb-3">
+    <label class="form-label" for="isAvailable">是否供應</label>
+    <select class="form-control" name="isAvailable" id="isAvailable" {{#if product}}disabled{{/if}}>
+        <option value="true" {{#if product.isAvailable}}selected{{/if}}>是</option>
+        <option value="false" {{#unless product.isAvailable}}selected{{/unless}}>否
+        </option>
+    </select>
+</div>

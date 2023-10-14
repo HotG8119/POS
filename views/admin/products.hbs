@@ -10,8 +10,9 @@
             <th scope="col">#</th>
             <th scope="col">名稱</th>
             <th scope="col">價格</th>
+            <th scope="col">商品說明</th>
             <th scope="col">提供狀態</th>
-            <th scope="col"></th>
+            <th scope="col">功能</th>
         </tr>
     </thead>
     <tbody>
@@ -19,15 +20,13 @@
         <tr>
             <th scope="row">{{this.id}}</th>
             <td>{{this.name}}</td>
+            <td>{{this.price}}</td>
+            <td>{{this.description}}</td>
+            <td>{{#if this.isAvailable}}是{{else}}否{{/if}}</td>
             <td>
                 <button type="button" class="btn btn-link">
                     <a class="btn btn-link link-primary" href="/admin/products/{{this.id}}">
                         詳細
-                    </a>
-                </button>
-                <button type="button" class="btn btn-link">
-                    <a class="btn btn-link link-primary" href="/admin/products/{{this.id}}/edit">
-                        修改
                     </a>
                 </button>
                 <form action="/admin/products/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
