@@ -9,6 +9,7 @@
         <tr>
             <th scope="col">#</th>
             <th scope="col">名稱</th>
+            <th scope="col">分類</th>
             <th scope="col">價格</th>
             <th scope="col">商品說明</th>
             <th scope="col">提供狀態</th>
@@ -20,6 +21,7 @@
         <tr>
             <th scope="row">{{this.id}}</th>
             <td>{{this.name}}</td>
+            <td>{{this.Category.name}}</td>
             <td>{{this.price}}</td>
             <td>{{this.description}}</td>
             <td>{{#if this.isAvailable}}是{{else}}否{{/if}}</td>

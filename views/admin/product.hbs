@@ -39,6 +39,7 @@
     const cancelButton = document.getElementById('cancel-edit-product');
 
     const name = document.getElementById('name');
+    const category = document.getElementById('category');
     const price = document.getElementById('price');
     const description = document.getElementById('description');
     const image = document.getElementById('image');
@@ -46,6 +47,7 @@
 
     editButton.addEventListener('click', () => {
         name.removeAttribute('readonly');
+        category.removeAttribute('disabled');
         price.removeAttribute('readonly');
         description.removeAttribute('readonly');
         image.removeAttribute('readonly');
@@ -57,6 +59,7 @@
 
     cancelButton.addEventListener('click', () => {
         name.setAttribute('readonly', true);
+        category.setAttribute('disabled', true);
         price.setAttribute('readonly', true);
         description.setAttribute('readonly', true);
         image.setAttribute('readonly', true);

@@ -1,5 +1,5 @@
 // const bcrypt = require('bcryptjs')
-const { Product } = require('../models')
+const { Product, Category } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
@@ -8,6 +8,7 @@ const adminServices = {
       const products = await Product.findAll({
         raw: true,
         nest: true,
+        include: 'Category',
         order: [['id', 'ASC']]
       })
       return cb(null, products)
@@ -15,8 +16,20 @@ const adminServices = {
       return cb(err)
     }
   },
+  getCreateProductPage: async (req, cb) => {
+    try {
+      const categories = await Category.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['id', 'name']
+      })
+      return cb(null, categories)
+    } catch (err) {
+      return cb(err)
+    }
+  },
   postProduct: async (req, cb) => {
-    const { name, price, description, isAvailable } = req.body
+    const { name, price, description, category, isAvailable } = req.body
     if (!name || !price) throw new Error('名稱與價錢為必填！')
     const { file } = req
 
@@ -26,6 +39,7 @@ const adminServices = {
         name,
         price,
         description,
+        CategoryId: category,
         image: localFile,
         isAvailable
       })
@@ -39,10 +53,17 @@ const adminServices = {
     try {
       const product = await Product.findByPk(req.params.id, {
         raw: true,
-        nest: true
+        nest: true,
+        include: [Category]
       })
+      const categories = await Category.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['id', 'name']
+      })
+
       if (!product) throw new Error('找不到該商品！')
-      return cb(null, product)
+      return cb(null, { product, categories })
     } catch (err) {
       return cb(err)
     }
@@ -51,7 +72,7 @@ const adminServices = {
     try {
       const product = await Product.findByPk(req.params.id)
       if (!product) throw new Error('找不到該商品！')
-      const { name, price, description, isAvailable } = req.body
+      const { name, price, description, category, isAvailable } = req.body
       if (!name || !price) throw new Error('名稱與價錢為必填！')
       const { file } = req
       const localFile = await imgurFileHandler(file)
@@ -59,6 +80,7 @@ const adminServices = {
         name,
         price,
         description,
+        CategoryId: category,
         image: localFile || product.image,
         isAvailable
       })

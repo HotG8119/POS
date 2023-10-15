@@ -4,6 +4,17 @@
         required {{#if product}}readonly{{/if}}>
 </div>
 <div class="form-row mb-3">
+    <label class="form-label" for="category">分類</label>
+    <select class="form-control" name="category" id="category" {{#if product}}disabled{{/if}}>
+        {{#each categories}}
+        <option value="{{this.id}}" {{#ifCond this.id ../product.CategoryId}}selected{{/ifCond}}>{{this.name}}
+        </option>
+        {{/each}}
+        </option>
+    </select>
+</div>
+
+<div class="form-row mb-3">
     <label class="form-label" for="price">價錢</label>
     <input class="form-control" type="number" name="price" id="price" placeholder="餐點價錢" value="{{product.price}}"
         min="0" max="99999" required {{#if product}}readonly{{/if}}>
