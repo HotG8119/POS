@@ -1,0 +1,77 @@
+<h1>人員清單</h1>
+<a href='/signup' class="btn btn-primary">新增人員</a>
+<table class="table align-middle">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">姓名</th>
+            <th scope="col">信箱</th>
+            <th scope="col">Admin</th>
+            <th scope="col">功能</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each users}}
+        <tr>
+            <th scope="row">{{this.id}}</th>
+            <td>{{this.name}}</td>
+            <td>{{this.email}}</td>
+            <td>{{#if this.isAdmin}}是{{else}}否{{/if}} <form action="/admin/users/{{this.id}}?_method=PUT" method="POST"
+                    style="display: inline;">
+                    <button type="button" class="btn btn-link link-warning" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal{{this.id}}">轉換權限</button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="deleteModal{{this.id}}" tabindex="-1"
+                        aria-labelledby="deleteModal{{this.id}}Label" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">確認轉換成 {{#if
+                                        this.isAdmin}}一般{{else}}admin{{/if}} 嗎</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-warning">確認</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </td>
+            <td>
+
+
+
+
+
+
+                <form action="/admin/products/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+                    <button type="button" class="btn btn-link link-danger" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal{{this.id}}">刪除</button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="deleteModal{{this.id}}" tabindex="-1"
+                        aria-labelledby="deleteModal{{this.id}}Label" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">確認刪除 {{this.name}} 嗎</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-danger">確認刪除</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

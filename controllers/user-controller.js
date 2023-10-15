@@ -21,6 +21,19 @@ const userController = {
     req.flash('success_messages', '成功登出！')
     req.logout()
     res.redirect('/login')
+  },
+  getUsers: (req, res, next) => {
+    userServices.getUsers(req, (err, data) => {
+      if (err) return next(err)
+      return res.render('admin/users', data)
+    })
+  },
+  patchUser: (req, res, next) => {
+    userServices.patchUser(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', '成功更新權限！')
+      return res.redirect('/admin/users')
+    })
   }
 }
 module.exports = userController

@@ -24,6 +24,39 @@ const userServices = {
     } catch (err) {
       return cb(err)
     }
+  },
+  getUsers: async (req, cb) => {
+    try {
+      // 從user資料表取出所有使用者資料 包含name email isAdmin
+      const users = await User.findAll({
+        raw: true,
+        attributes: ['id', 'name', 'email', 'isAdmin']
+      })
+
+      return cb(null, { users })
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  patchUser: async (req, cb) => {
+    try {
+      const { id } = req.params
+      // 找到至少兩個是admin的使用者
+      const adminUser = await User.findAll({
+        raw: true,
+        attributes: ['isAdmin'],
+        where: { isAdmin: true },
+        limit: 2
+      })
+      const user = await User.findByPk(id)
+      if (!user) throw new Error('找不到該使用者！')
+      if (adminUser.length <= 1 && user.isAdmin) throw new Error('至少要有一個管理員！')
+      await user.update({ isAdmin: !user.isAdmin })
+
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
   }
 }
 
