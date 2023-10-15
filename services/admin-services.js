@@ -1,6 +1,6 @@
 // const bcrypt = require('bcryptjs')
 const { Product } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
   getProducts: async (req, cb) => {
@@ -21,7 +21,7 @@ const adminServices = {
     const { file } = req
 
     try {
-      const localFile = await localFileHandler(file)
+      const localFile = await imgurFileHandler(file)
       await Product.create({
         name,
         price,
@@ -54,7 +54,7 @@ const adminServices = {
       const { name, price, description, isAvailable } = req.body
       if (!name || !price) throw new Error('名稱與價錢為必填！')
       const { file } = req
-      const localFile = await localFileHandler(file)
+      const localFile = await imgurFileHandler(file)
       await product.update({
         name,
         price,

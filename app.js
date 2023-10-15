@@ -1,6 +1,6 @@
-// if (process.env.NODE_ENV !== 'production') {
-//   require('dotenv').config()
-// }
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 const path = require('path')
 const express = require('express')
@@ -16,8 +16,8 @@ const { getUser } = require('./helpers/auth-helpers')
 const { pages } = require('./routes')
 
 const app = express()
-const port = process.env.PORT || 3001
-const SESSION_SECRET = 'secret'
+const port = process.env.PORT || 3000
+const SESSION_SECRET = process.env.SESSION_SECRET || 'secret'
 
 app.engine('hbs', handlebars({ defaultLayout: 'main', extname: '.hbs', helpers: handlebarsHelpers }))
 app.set('view engine', 'hbs')

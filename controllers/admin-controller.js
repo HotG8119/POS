@@ -7,7 +7,10 @@ const adminController = {
   getProducts: (req, res, next) => {
     adminServices.getProducts(req, (err, data) => {
       if (err) return next(err)
-      console.log(data)
+      // 將所有的data.description縮短到50字元內的空格 並加上...
+      data.forEach(product => {
+        product.description = product.description.slice(0, 50).trim() + '...'
+      })
       return res.render('admin/products', { products: data })
     })
   },
@@ -22,7 +25,6 @@ const adminController = {
   },
   getProduct: (req, res, next) => {
     adminServices.getProduct(req, (err, data) => {
-      console.log(data)
       if (err) return next(err)
       return res.render('admin/product', { product: data })
     })
