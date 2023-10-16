@@ -29,7 +29,6 @@ const adminController = {
   getProduct: (req, res, next) => {
     adminServices.getProduct(req, (err, data) => {
       if (err) return next(err)
-      console.log(data)
       return res.render('admin/product', { product: data.product, categories: data.categories })
     })
   },
@@ -44,7 +43,34 @@ const adminController = {
       if (err) return next(err)
       return res.redirect('/admin/products')
     })
+  },
+  getCategoriesPage: (req, res, next) => {
+    // 這裡的req.params.id是指編輯的那個category的id 傳到adminServices的getCategoriesPage
+    adminServices.getCategoriesPage(req, (err, data) => {
+      console.log(data)
+      if (err) return next(err)
+      return res.render('admin/categories', { categories: data.categories, category: data.category })
+    })
+  },
+  postCategory: (req, res, next) => {
+    adminServices.postCategory(req, (err, data) => {
+      if (err) return next(err)
+      return res.redirect('/admin/categories')
+    })
+  },
+  deleteCategory: (req, res, next) => {
+    adminServices.deleteCategory(req, (err, data) => {
+      if (err) return next(err)
+      return res.redirect('/admin/categories')
+    })
+  },
+  putCategory: (req, res, next) => {
+    adminServices.putCategory(req, (err, data) => {
+      if (err) return next(err)
+      return res.redirect('/admin/categories')
+    })
   }
+
 }
 
 module.exports = adminController

@@ -100,6 +100,50 @@ const adminServices = {
     } catch (err) {
       return cb(err)
     }
+  },
+  getCategoriesPage: async (req, cb) => {
+    try {
+      const categories = await Category.findAll({ raw: true })
+      const category = req.params.is ?? await Category.findByPk(req.params.id, { raw: true })
+      return cb(null, { categories, category })
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  postCategory: async (req, cb) => {
+    try {
+      const { name } = req.body
+      if (!name) throw new Error('請輸入分類名稱！')
+      await Category.create({ name })
+      req.flash('success_messages', '成功新增分類！')
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  deleteCategory: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const category = await Category.findByPk(id)
+      if (!category) throw new Error('找不到該分類！')
+      await category.destroy()
+      req.flash('success_messages', '成功刪除分類！')
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  putCategory: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const { name } = req.body
+      const category = await Category.findByPk(id)
+      if (!category) throw new Error('找不到該分類！')
+      await category.update({ name })
+      return cb(null)
+    } catch (error) {
+
+    }
   }
 }
 
