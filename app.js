@@ -36,6 +36,7 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use(express.static('public'))
 app.use(pages)
 
 app.listen(port, () => {

@@ -1,7 +1,7 @@
 const orderController = {
-  getProducts: (req, res) => {
-    console.log(res)
-    res.render('products')
+  postOrder: (req, res) => {
+    console.log(req.body)
+    console.log('postOrder')
   }
 }
 
