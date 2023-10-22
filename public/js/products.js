@@ -113,8 +113,9 @@ function reset () {
 }
 
 function addCartItemsToValue (cartItems) {
+  const cartItemsData = JSON.stringify(cartItems)
   // 將cartItems轉成成 {[item.id, item.quantity], [item.id, item.quantity]...} 並轉成JSON格式
-  const cartItemsData = JSON.stringify(cartItems.map(item => [Number(item.id), Number(item.quantity)]))
+  // const cartItemsData = JSON.stringify(cartItems.map(item => [Number(item.id), Number(item.quantity)]))
   // 存到input的value裡
   const cartItemsInput = document.getElementById('cartItems')
   const totalAmountInput = document.getElementById('totalAmount')
@@ -127,7 +128,6 @@ menu.addEventListener('click', addToCart)
 cart.addEventListener('click', deleteCartItem)
 button.addEventListener('click', () => {
   addCartItemsToValue(cartItems)
-  alert('訂單送出成功')
-  reset()
+  // reset()
 })
 resetCartButton.addEventListener('click', reset)

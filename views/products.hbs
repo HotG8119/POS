@@ -1,5 +1,6 @@
 <div class="container">
     <h3>支付測試點餐機</h3>
+    <option value=""></option>
     <div class="row" id="menu">
         {{#each products}}
         {{#if this.Products.id}}
@@ -45,9 +46,24 @@
         <div class="col-12">
 
             <form action="/orders" method="post">
-                <input id="cartItems" type="hidden" name="cartItems" value="JSON格式的購物車內容">
-                <input id="totalAmount" type="hidden" name="totalAmount" value="總金額">
-                <button type="submit" class="btn btn-info" id="submit-button">結帳</button>
+                桌號：
+                <select name="table" class="m-2" required>
+                    <option value="" disabled selected>請選擇桌號</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="takeOut">外帶</option>
+                </select>
+                <input id="cartItems" type="hidden" name="cartItems" value="">
+                <input id="totalAmount" type="hidden" name="totalAmount" value="">
+                <button type="submit" class="btn btn-info" id="submit-button">送出訂單</button>
             </form>
 
         </div>

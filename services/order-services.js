@@ -16,9 +16,18 @@ const orderServices = {
   },
   postOrder: async (req, cb) => {
     try {
-      const { cartItems, totalAmount, notes } = req.body
+      const { table, cartItems, totalAmount, notes } = req.body
+      // 將cartItems轉成array 並留下id和quantity
+
+      const cartItemsData = JSON.parse(cartItems).map(item => ({
+        id: item.id,
+        quantity: item.quantity
+      }))
+
+      console.log(cartItemsData)
       const order = await Order.create({
-        cartItems,
+        table,
+        cartItems: cartItemsData,
         totalAmount,
         notes
       })
