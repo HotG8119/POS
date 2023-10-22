@@ -74,19 +74,35 @@ function calculateTotal (cartItems) {
   totalAmount.textContent = total
 }
 
-// 8.送出訂單
-function submit () {
-  if (cartItems.length === 0) {
-    return alert('請先加入商品')
-  }
-  axios.post('/orders', { cartItems, total })
-    .then(res => {
-      console.log(cartItems)
-    })
-    .catch(err => console.log(err))
-  alert('訂單送出')
-  reset()
-}
+// // 8.送出訂單
+// function submit () {
+//   if (cartItems.length === 0) {
+//     return alert('請先加入商品')
+//   }
+//   const cartItemsData = JSON.stringify(cartItems)
+//   // const cartItemsData = JSON.stringify(cartItems.map(item => ({
+//   //   id: item.id,
+//   //   quantity: item.quantity
+//   // })))
+//   console.log(cartItemsData)
+
+//   axios.post('/orders', {
+//     cartItems: cartItemsData,
+//     total
+//   })
+//     .then(res => {
+//       if (res.data.status === 'success') {
+//         alert('訂單送出成功')
+//         reset()
+//       } else {
+//         alert('訂單送出失敗')
+//       }
+//     })
+//     .catch(err => {
+//       console.log(err)
+//       alert('訂單送出失敗')
+//     })
+// }
 
 // 9.重置資料
 function reset () {
@@ -96,8 +112,22 @@ function reset () {
   totalAmount.textContent = total
 }
 
+function addCartItemsToValue (cartItems) {
+  // 將cartItems轉成成 {[item.id, item.quantity], [item.id, item.quantity]...} 並轉成JSON格式
+  const cartItemsData = JSON.stringify(cartItems.map(item => [Number(item.id), Number(item.quantity)]))
+  // 存到input的value裡
+  const cartItemsInput = document.getElementById('cartItems')
+  const totalAmountInput = document.getElementById('totalAmount')
+  cartItemsInput.value = cartItemsData
+  totalAmountInput.value = total
+}
+
 // 10. 加入事件監聽
 menu.addEventListener('click', addToCart)
 cart.addEventListener('click', deleteCartItem)
-button.addEventListener('click', submit)
+button.addEventListener('click', () => {
+  addCartItemsToValue(cartItems)
+  alert('訂單送出成功')
+  reset()
+})
 resetCartButton.addEventListener('click', reset)

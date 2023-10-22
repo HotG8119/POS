@@ -41,11 +41,18 @@
         </div>
     </div>
     <h5 class="mt-4">總金額：<span id="total-amount">--</span></h5>
-    <div class="row mt-5">
+    <div class="row mb-5">
         <div class="col-12">
-            <button type="button" class="btn btn-info" id="submit-button">結帳</button>
+
+            <form action="/orders" method="post">
+                <input id="cartItems" type="hidden" name="cartItems" value="JSON格式的購物車內容">
+                <input id="totalAmount" type="hidden" name="totalAmount" value="總金額">
+                <button type="submit" class="btn btn-info" id="submit-button">結帳</button>
+            </form>
+
         </div>
     </div>
 </div>
+
 
 <script src="/js/products.js"></script>

@@ -23,6 +23,7 @@ router.get('/logout', userController.logout)
 
 router.get('/products', productController.getProducts)
 
+router.get('/orders', orderController.getOrdersPage)
 router.post('/orders', orderController.postOrder)
 
 router.get('/', (req, res) => res.redirect('/products'))
