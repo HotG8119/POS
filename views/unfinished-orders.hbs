@@ -1,0 +1,92 @@
+<h1 class="mb-5">未完成訂單</h1>
+
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    {{#each unfinishedOrders}}
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header" id="panelsStayOpen-heading-{{this.id}}">
+            <button class="accordion-button collapsed row" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapse-{{this.id}}" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapse-{{this.id}}" style="margin:0">
+                <div class="col-md-4">
+                    <h4>訂單編號: {{this.id}}</h4>
+                </div>
+                <div class="col-md-4">
+                    <h4>訂單時間: {{this.createdAt}}</h4>
+                </div>
+                <div class="col-md-4">
+                    <h4>桌號: {{this.table}}</h4>
+                </div>
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapse-{{this.id}}" class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-heading-{{this.id}}">
+            <div class="accordion-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <th scope="col">產品名稱</th>
+                            <th scope="col">數量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each this.cartItems}}
+                        <tr>
+                            <td>{{this.name}}</td>
+                            <td>{{this.quantity}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h5>訂單備註</h5>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea rows="4" class="form-control" readonly>{{this.notes}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12 text-end">
+                    <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal"
+                        data-bs-target="#orderCheck" data-bs-whatever="{{this.id}}">訂單完成</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+{{! Modal }}
+<div class="modal fade" id="orderCheck" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">訂單 確定完成了嗎？</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <a href="/orders/:orderId?_method=PUT" method="POST" class="btn btn-primary" id="checkAgain">是</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">否</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const orderCheck = document.querySelector('#orderCheck')
+    orderCheck.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        const button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        const recipient = button.getAttribute('data-bs-whatever')
+        // If necessary, you could initiate an AJAX request here
+        // and then do the updating in a callback.
+        //
+        // Update the modal's content.
+        const modalTitle = orderCheck.querySelector('.modal-title')
+        const checkAgain = orderCheck.querySelector('#checkAgain')
+
+        modalTitle.textContent = `訂單編號: ${recipient} 確定完成了嗎？`
+        checkAgain.href = `/orders/${recipient}?_method=PUT`
+    })
+</script>

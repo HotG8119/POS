@@ -1,13 +1,6 @@
 const orderService = require('../services/order-services')
 
 const orderController = {
-  getOrdersPage: (req, res, next) => {
-    return res.render('orders')
-    // orderService.getOrdersPage(req, (err, data) => {
-    //   if (err) return next(err)
-    //   return res.render('orders', data)
-    // })
-  },
   postOrder: (req, res, next) => {
     const { table, cartItems } = req.body
     const cartItemsData = JSON.parse(cartItems)
@@ -27,7 +20,14 @@ const orderController = {
       req.flash('success_messages', '成功送出訂單！')
       return res.redirect('/products')
     })
+  },
+  getUnfinishedOrdersPage: (req, res, next) => {
+    orderService.getUnfinishedOrdersPage(req, (err, data) => {
+      if (err) return next(err)
+      return res.render('unfinished-orders', { unfinishedOrders: data })
+    })
   }
+
 }
 
 module.exports = orderController
