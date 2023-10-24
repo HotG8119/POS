@@ -65,7 +65,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-footer">
-                <a href="/orders/:orderId?_method=PUT" method="POST" class="btn btn-primary" id="checkAgain">是</a>
+                <form class="row" action="/orders/unfinished/:orderId?_method=PUT" method="POST" id="checkAgain">
+                    <button type="submit" class="btn btn-primary">是</button>
+                </form>
+
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">否</button>
             </div>
         </div>
@@ -87,6 +90,6 @@
         const checkAgain = orderCheck.querySelector('#checkAgain')
 
         modalTitle.textContent = `訂單編號: ${recipient} 確定完成了嗎？`
-        checkAgain.href = `/orders/${recipient}?_method=PUT`
+        checkAgain.action = `/orders/unfinished/${recipient}?_method=PUT`
     })
 </script>

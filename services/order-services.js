@@ -54,13 +54,20 @@ const orderServices = {
         return order
       })
 
-      ordersWithProducts.forEach(order => {
-        console.log(order.cartItems)
-      })
-
-      console.log(ordersWithProducts)
-
       return cb(null, ordersWithProducts)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  finishOrder: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const order = await Order.findByPk(id)
+
+      if (!order) throw new Error('此訂單不存在！')
+
+      await order.update({ completedAt: new Date() })
+      return cb(null, order)
     } catch (err) {
       return cb(err)
     }

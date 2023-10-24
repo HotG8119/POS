@@ -26,6 +26,13 @@ const orderController = {
       if (err) return next(err)
       return res.render('unfinished-orders', { unfinishedOrders: data })
     })
+  },
+  finishOrder: (req, res, next) => {
+    orderService.finishOrder(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', `訂單 ${req.params.id} 已完成！`)
+      return res.redirect('/orders/unfinished')
+    })
   }
 
 }
