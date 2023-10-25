@@ -54,17 +54,9 @@
                                     桌號：
                                     <select name="table" class="m-2" required>
                                         <option value="" disabled selected>請選擇桌號</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="takeOut">外帶</option>
+                                        {{#each tables}}
+                                        <option value="{{this.id}}">{{this.name}}</option>
+                                        {{/each}}
                                     </select>
                                 </div>
                                 <div class="col-md-12">

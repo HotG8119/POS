@@ -1,4 +1,4 @@
-const { Product, Category } = require('../models')
+const { Product, Category, Table } = require('../models')
 
 const productServices = {
   getProducts: async (req, cb) => {
@@ -9,8 +9,9 @@ const productServices = {
         attributes: ['id', 'name'],
         include: [Product]
       })
+      const tables = await Table.findAll({ raw: true })
 
-      return cb(null, products)
+      return cb(null, { products, tables })
     } catch (err) {
       return cb(err)
     }
