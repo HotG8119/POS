@@ -26,6 +26,8 @@ router.get('/products', productController.getProducts)
 router.put('/orders/unfinished/:id', orderController.finishOrder)
 router.get('/orders/unfinished', orderController.getUnfinishedOrdersPage)
 
+router.get('/orders/unpaid', orderController.getUnpaidOrdersPage)
+
 router.post('/orders', orderController.postOrder)
 
 router.get('/', (req, res) => res.redirect('/products'))

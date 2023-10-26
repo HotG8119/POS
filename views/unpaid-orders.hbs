@@ -1,7 +1,7 @@
-<h1 class="mb-5">未完成訂單</h1>
+<h1 class="mb-5">未結帳訂單</h1>
 
 <div class="accordion" id="accordionPanelsStayOpenExample">
-    {{#each unfinishedOrders}}
+    {{#each unpaidOrders}}
     <div class="accordion-item mb-3">
         <h2 class="accordion-header" id="panelsStayOpen-heading-{{this.id}}">
             <button class="accordion-button collapsed row" type="button" data-bs-toggle="collapse"
@@ -11,7 +11,7 @@
                     <h4>訂單編號: {{this.id}}</h4>
                 </div>
                 <div class="col-md-4">
-                    <h4>訂單時間: {{this.createdAt}}</h4>
+                    <h4>完成時間: {{this.completedAt}}</h4>
                 </div>
                 <div class="col-md-4">
                     <h4>桌號: {{this.tableName}}</h4>
@@ -27,6 +27,8 @@
 
                             <th scope="col">產品名稱</th>
                             <th scope="col">數量</th>
+                            <th scope="col">單價</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -34,21 +36,15 @@
                         <tr>
                             <td>{{this.name}}</td>
                             <td>{{this.quantity}}</td>
+                            <td>{{this.price}}</td>
                         </tr>
                         {{/each}}
                     </tbody>
                 </table>
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <h5>訂單備註</h5>
-                    </div>
-                    <div class="col-md-12">
-                        <textarea rows="4" class="form-control" readonly>{{this.notes}}</textarea>
-                    </div>
-                </div>
                 <div class="col-md-12 text-end">
+                    <h4>總價: {{this.totalAmount}}</h4>
                     <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal"
-                        data-bs-target="#orderCheck" data-bs-whatever="{{this.id}}">訂單完成</button>
+                        data-bs-target="#orderCheck" data-bs-whatever="{{this.id}}">結帳</button>
                 </div>
             </div>
         </div>
@@ -57,13 +53,44 @@
 </div>
 
 {{! Modal }}
-<div class="modal fade" id="orderCheck" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade " id="orderCheck" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">訂單 確定完成了嗎？</h5>
+                <h5 class="modal-title" id="exampleModalLabel">結帳</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
+            <div class="modal-body">
+                <div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">產品名稱</th>
+                                <th scope="col">數量</th>
+                                <th scope="col">單價</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each this.cartItems}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td>{{this.quantity}}</td>
+                                <td>{{this.price}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="text-end">
+                    <h4 id="checkTotalAmount">總價: {{this.totalAmount}}</h4>
+                </div>
+            </div>
+
             <div class="modal-footer">
                 <form class="row" action="/orders/unfinished/:orderId?_method=PUT" method="POST" id="checkAgain">
                     <button type="submit" class="btn btn-primary">是</button>
@@ -89,7 +116,7 @@
         const modalTitle = orderCheck.querySelector('.modal-title')
         const checkAgain = orderCheck.querySelector('#checkAgain')
 
-        modalTitle.textContent = `訂單編號: ${recipient} 確定完成了嗎？`
+        modalTitle.textContent = `訂單編號: ${recipient} 確定結帳！`
         checkAgain.action = `/orders/unfinished/${recipient}?_method=PUT`
     })
 </script>

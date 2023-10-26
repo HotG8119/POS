@@ -1,19 +1,18 @@
 const dayjs = require('dayjs')
-const { Order, Product } = require('../models')
+const { Op } = require('sequelize')
+const { Order, Product, Table } = require('../models')
 
 const orderServices = {
   postOrder: async (req, cb) => {
     try {
-      const { table, cartItems, totalAmount, notes } = req.body
+      const { tableId, cartItems, totalAmount, notes } = req.body
       // 將cartItems轉成array 並留下id和quantity
-
       const cartItemsData = JSON.parse(cartItems).map(item => ({
         id: item.id,
         quantity: item.quantity
       }))
-      console.log(cartItemsData)
       const order = await Order.create({
-        table,
+        tableId,
         cartItems: cartItemsData,
         totalAmount,
         notes
@@ -39,6 +38,8 @@ const orderServices = {
         attributes: ['id', 'name', 'price']
       })
 
+      const tables = await Table.findAll({ raw: true })
+
       const ordersWithProducts = orders.map(order => {
         // 將所有orders的cartItems用id找到對應的product，並加入name, price, image到cartItems
         order.cartItems.forEach(item => {
@@ -50,6 +51,8 @@ const orderServices = {
         })
         // 將order的時間用dayjs改成HH:mm
         order.createdAt = dayjs(order.createdAt).format('HH:mm')
+        // 將order的tableI換成table的name
+        order.tableName = tables.find(table => table.id === order.tableId)?.name || '無'
 
         return order
       })
@@ -71,8 +74,45 @@ const orderServices = {
     } catch (err) {
       return cb(err)
     }
-  }
+  },
+  getUnpaidOrdersPage: async (req, cb) => {
+    try {
+      // 用tableId找到所有completed_at = !null的order
+      const unpaidOrders = await Order.findAll({
+        raw: true,
+        nest: true,
+        where: { completed_at: { [Op.not]: null } },
+        order: [['tableId', 'ASC']]
+      })
 
+      const products = await Product.findAll({
+        raw: true,
+        attributes: ['id', 'name', 'price']
+      })
+
+      const tables = await Table.findAll({ raw: true })
+
+      unpaidOrders.forEach(order => {
+        // 將所有orders的cartItems用id找到對應的product，並加入name, price, image到cartItems
+        order.cartItems.forEach(item => {
+          const itemId = Number(item.id)
+          // 用itemId找到對應的product
+          const product = products.find(product => product.id === itemId)
+          item.name = product.name
+          item.price = product.price
+        })
+        console.log(products)
+        // 將所有completed_at轉成HH:mm
+        order.completedAt = dayjs(order.completedAt).format('HH:mm')
+        // 將所有tableId換成table的name
+        order.tableName = tables.find(table => table.id === order.tableId)?.name || '無'
+      })
+      console.log(unpaidOrders)
+      return cb(null, unpaidOrders)
+    } catch (err) {
+      return cb(err)
+    }
+  }
 }
 
 module.exports = orderServices
