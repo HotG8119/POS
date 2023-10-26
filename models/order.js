@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     cartItems: DataTypes.JSON,
     totalAmount: DataTypes.DECIMAL,
     paymentMethod: DataTypes.STRING,
+    paidAt: DataTypes.DATE,
     notes: DataTypes.TEXT,
     userId: DataTypes.INTEGER,
     completedAt: DataTypes.DATE

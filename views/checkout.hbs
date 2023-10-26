@@ -1,0 +1,93 @@
+<h1>checkOutOrder</h1>
+
+<div>
+    <div class="col-md-4">
+        <h4>訂單編號: {{checkoutOrder.id}}</h4>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+
+                <th scope="col">產品名稱</th>
+                <th scope="col">數量</th>
+                <th scope="col">金額</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each checkoutOrder.cartItems}}
+            <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.quantity}}</td>
+                <td>{{this.price}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    <div class="col-md-12 text-end">
+        <h4>總價: {{checkoutOrder.totalAmount}}</h4>
+        <div class="d-flex flex-row-reverse">
+            <form action="/orders/checkout/cash/{{checkoutOrder.id}}?_method=PUT" method="POST" class="me-2">
+                <input type="hidden" name="paymentMethod" value="cash">
+                <button type="submit" class="btn btn-success mt-2">現金結帳</button>
+            </form>
+            <a href="/orders/checkout/{{this.id}}" class="btn btn-success m-2">Line Pay</a>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+<div class="accordion-item mb-3">
+    <h2 class="accordion-header" id="panelsStayOpen-heading-{{this.id}}">
+        <button class="accordion-button collapsed row" type="button" data-bs-toggle="collapse"
+            data-bs-target="#panelsStayOpen-collapse-{{this.id}}" aria-expanded="false"
+            aria-controls="panelsStayOpen-collapse-{{this.id}}" style="margin:0">
+            <div class="col-md-4">
+                <h4>訂單編號: {{checkoutOrder.id}}</h4>
+            </div>
+            <div class="col-md-4">
+                <h4>訂單時間: {{checkoutOrder.createdAt}}</h4>
+            </div>
+        </button>
+    </h2>
+    <div id="panelsStayOpen-collapse-{{this.id}}" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-heading-{{this.id}}">
+        <div class="accordion-body">
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th scope="col">產品名稱</th>
+                        <th scope="col">數量</th>
+                        <th scope="col">金額</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each checkoutOrder.cartItems}}
+                    <tr>
+                        <td>{{this.name}}</td>
+                        <td>{{this.quantity}}</td>
+                        <td>{{this.price}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h5>訂單備註</h5>
+                </div>
+                <div class="col-md-12">
+                    <textarea rows="4" class="form-control" readonly>{{checkoutOrder.notes}}</textarea>
+                </div>
+            </div>
+            <div class="col-md-12 text-end">
+                <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#orderCheck"
+                    data-bs-whatever="{{this.id}}">訂單完成</button>
+            </div>
+        </div>
+    </div>
+</div>

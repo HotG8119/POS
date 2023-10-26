@@ -81,7 +81,7 @@ const orderServices = {
       const unpaidOrders = await Order.findAll({
         raw: true,
         nest: true,
-        where: { completed_at: { [Op.not]: null } },
+        where: { completed_at: { [Op.not]: null }, payment_method: null },
         order: [['tableId', 'ASC']]
       })
 
@@ -101,14 +101,48 @@ const orderServices = {
           item.name = product.name
           item.price = product.price
         })
-        console.log(products)
         // 將所有completed_at轉成HH:mm
         order.completedAt = dayjs(order.completedAt).format('HH:mm')
         // 將所有tableId換成table的name
         order.tableName = tables.find(table => table.id === order.tableId)?.name || '無'
       })
-      console.log(unpaidOrders)
       return cb(null, unpaidOrders)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  getCheckoutPage: async (req, cb) => {
+    try {
+      const id = Number(req.params.id)
+      const order = await Order.findByPk(id, { raw: true })
+      if (!order) throw new Error('此訂單不存在！')
+      if (order.paymentMethod) throw new Error('此訂單已付款！')
+      const products = await Product.findAll({
+        raw: true,
+        attributes: ['id', 'name', 'price']
+      })
+
+      order.cartItems.forEach(item => {
+        const itemId = Number(item.id)
+        const product = products.find(product => product.id === itemId)
+        item.name = product.name
+        item.price = product.price
+      }
+      )
+
+      return cb(null, order)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  checkoutByCash: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const order = await Order.findByPk(id)
+      if (!order) throw new Error('此訂單不存在！')
+      if (order.paymentMethod) throw new Error('此訂單已付款！')
+      await order.update({ paymentMethod: 'cash', paidAt: new Date() })
+      return cb(null, order)
     } catch (err) {
       return cb(err)
     }

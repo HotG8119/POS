@@ -27,6 +27,8 @@ router.put('/orders/unfinished/:id', orderController.finishOrder)
 router.get('/orders/unfinished', orderController.getUnfinishedOrdersPage)
 
 router.get('/orders/unpaid', orderController.getUnpaidOrdersPage)
+router.put('/orders/checkout/cash/:id', orderController.checkoutByCash)
+router.get('/orders/checkout/:id', orderController.getCheckoutPage)
 
 router.post('/orders', orderController.postOrder)
 

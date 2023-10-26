@@ -43,8 +43,7 @@
                 </table>
                 <div class="col-md-12 text-end">
                     <h4>總價: {{this.totalAmount}}</h4>
-                    <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal"
-                        data-bs-target="#orderCheck" data-bs-whatever="{{this.id}}">結帳</button>
+                    <a href="/orders/checkout/{{this.id}}" class="btn btn-success mt-2">結帳</a>
                 </div>
             </div>
         </div>
@@ -117,6 +116,6 @@
         const checkAgain = orderCheck.querySelector('#checkAgain')
 
         modalTitle.textContent = `訂單編號: ${recipient} 確定結帳！`
-        checkAgain.action = `/orders/unfinished/${recipient}?_method=PUT`
+        checkAgain.action = `/orders/checkout/${recipient}`
     })
 </script>

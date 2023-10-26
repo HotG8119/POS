@@ -1,3 +1,4 @@
+// const dayjs = require('dayjs')
 const orderService = require('../services/order-services')
 
 const orderController = {
@@ -39,6 +40,28 @@ const orderController = {
       if (err) return next(err)
 
       return res.render('unpaid-orders', { unpaidOrders: data })
+    })
+  },
+  getCheckoutPage: (req, res, next) => {
+    orderService.getCheckoutPage(req, (err, data) => {
+      if (err) return next(err)
+      console.log(data)
+      // const checkOrder = {
+      //   productName: '餐點',
+      //   amount: data.totalAmount,
+      //   currency: 'TWD',
+      //   orderId: data.id,
+      //   oneTimeKey: dayjs().valueOf().toString().padEnd(18, '0')
+      // }
+
+      return res.render('checkout', { checkoutOrder: data })
+    })
+  },
+  checkoutByCash: (req, res, next) => {
+    orderService.checkoutByCash(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', `訂單 ${req.params.id} 已完成付款！`)
+      return res.redirect('/orders/unpaid')
     })
   }
 
