@@ -1,5 +1,17 @@
-// const dayjs = require('dayjs')
+const { HmacSHA256 } = require('crypto-js')
+const Base64 = require('crypto-js/enc-base64')
+const axios = require('axios')
+
 const orderService = require('../services/order-services')
+const {
+  LINEPAY_VERSION,
+  LINEPAY_SITE,
+  LINEPAY_CHANNEL_ID,
+  LINEPAY_CHANNEL_SECRET,
+  LINEPAY_RETURN_HOST,
+  LINEPAY_RETURN_CONFIRM_URL,
+  LINEPAY_RETURN_CANCEL_URL
+} = process.env
 
 const orderController = {
   postOrder: (req, res, next) => {
@@ -45,15 +57,6 @@ const orderController = {
   getCheckoutPage: (req, res, next) => {
     orderService.getCheckoutPage(req, (err, data) => {
       if (err) return next(err)
-      console.log(data)
-      // const checkOrder = {
-      //   productName: '餐點',
-      //   amount: data.totalAmount,
-      //   currency: 'TWD',
-      //   orderId: data.id,
-      //   oneTimeKey: dayjs().valueOf().toString().padEnd(18, '0')
-      // }
-
       return res.render('checkout', { checkoutOrder: data })
     })
   },
@@ -63,8 +66,106 @@ const orderController = {
       req.flash('success_messages', `訂單 ${req.params.id} 已完成付款！`)
       return res.redirect('/orders/unpaid')
     })
+  },
+  checkoutByLinepay: (req, res, next) => {
+    orderService.checkoutByLinepay(req, async (err, data) => {
+      if (err) return next(err)
+      try {
+        const order = data.order
+        const products = data.products
+        // 將所有orders的cartItems用id找到對應的product，並加入name, price, image到cartItems
+        order.cartItems.forEach(item => {
+          const product = products.find(product => product.id.toString() === item.id)
+          item.name = product.name
+          item.price = Number(product.price)
+          item.amount = Number(item.price) * Number(item.quantity)
+        })
+        // 製作 linepay 的 body
+        const packages = order.cartItems.map(item => ({
+          id: item.id,
+          amount: Number(item.amount),
+          products: [
+            {
+              name: item.name,
+              quantity: Number(item.quantity),
+              price: Number(item.price)
+            }
+          ]
+        }))
+
+        const orderToLinepay = {
+          amount: Number(order.totalAmount),
+          currency: 'TWD',
+          orderId: (order.id).toString(),
+          packages: packages
+        }
+
+        const linepayBody = {
+          ...orderToLinepay,
+          redirectUrls: {
+            confirmUrl: LINEPAY_RETURN_HOST + LINEPAY_RETURN_CONFIRM_URL,
+            cancelUrl: LINEPAY_RETURN_HOST + LINEPAY_RETURN_CANCEL_URL
+          }
+        }
+        // 製作 linepay 的 signature
+        const uri = '/payments/request'
+        const headers = createSignature(uri, linepayBody)
+        const url = LINEPAY_SITE + LINEPAY_VERSION + uri
+        // 向 linepay 發送請求
+        const linepayRes = await axios.post(url, linepayBody, { headers })
+
+        if (linepayRes?.data?.returnCode === '0000') {
+          res.redirect(linepayRes?.data?.info.paymentUrl.web)
+        } else {
+          req.flash('error_messages', '付款失敗！')
+          return res.redirect('/orders/unpaid')
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    })
+  },
+  linepayConfirm: (req, res, next) => {
+    orderService.linepayConfirm(req, async (err, data) => {
+      try {
+        if (err) return next(err)
+        const { transactionId, orderId } = req.query
+        const order = data
+        const linpayBody = {
+          amount: Number(order.totalAmount),
+          currency: 'TWD'
+        }
+        const uri = `/payments/${transactionId}/confirm`
+        const headers = createSignature(uri, linpayBody)
+        const url = LINEPAY_SITE + LINEPAY_VERSION + uri
+        const linepayRes = await axios.post(url, linpayBody, { headers })
+        if (linepayRes?.data?.returnCode === '0000') {
+          orderService.LinepaySuccess(orderId, (err, data) => {
+            if (err) return next(err)
+            req.flash('success_messages', `訂單 ${orderId} 已完成付款！`)
+            return res.redirect('/orders/unpaid')
+          })
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    })
   }
 
+}
+
+function createSignature (uri, linepayBody) {
+  const nonce = parseInt(new Date().getTime() / 1000)
+  const string = LINEPAY_CHANNEL_SECRET + '/' + LINEPAY_VERSION + uri + JSON.stringify(linepayBody) + nonce
+  const signature = Base64.stringify(HmacSHA256(string, LINEPAY_CHANNEL_SECRET))
+  // 製作 linepay 的 headers
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-LINE-ChannelId': LINEPAY_CHANNEL_ID,
+    'X-LINE-Authorization-Nonce': nonce,
+    'X-LINE-Authorization': signature
+  }
+  return headers
 }
 
 module.exports = orderController

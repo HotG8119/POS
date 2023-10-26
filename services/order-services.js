@@ -146,6 +146,46 @@ const orderServices = {
     } catch (err) {
       return cb(err)
     }
+  },
+  checkoutByLinepay: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const order = await Order.findByPk(id, {
+        raw: true,
+        attributes: ['id', 'cartItems', 'totalAmount', 'paymentMethod']
+      })
+      if (!order) throw new Error('此訂單不存在！')
+      if (order.paymentMethod) throw new Error('此訂單已付款！')
+      const products = await Product.findAll({
+        raw: true,
+        attributes: ['id', 'name', 'price']
+      })
+      return cb(null, { order, products })
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  linepayConfirm: async (req, cb) => {
+    try {
+      const { orderId } = req.query
+      const order = await Order.findByPk(orderId, { raw: true })
+
+      return cb(null, order)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  LinepaySuccess: async (orderId, cb) => {
+    try {
+      console.log(orderId)
+      // const { orderId } = req.body
+      const order = await Order.findByPk(orderId)
+
+      await order.update({ paymentMethod: 'linepay', paidAt: new Date() })
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
   }
 }
 

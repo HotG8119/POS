@@ -28,9 +28,12 @@ router.get('/orders/unfinished', orderController.getUnfinishedOrdersPage)
 
 router.get('/orders/unpaid', orderController.getUnpaidOrdersPage)
 router.put('/orders/checkout/cash/:id', orderController.checkoutByCash)
+router.post('/orders/checkout/linepay/:id', orderController.checkoutByLinepay)
 router.get('/orders/checkout/:id', orderController.getCheckoutPage)
 
 router.post('/orders', orderController.postOrder)
+
+router.get('/linepay/confirm', orderController.linepayConfirm)
 
 router.get('/', (req, res) => res.redirect('/products'))
 router.use('/', generalErrorHandler)
