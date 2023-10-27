@@ -1,6 +1,10 @@
 <h1 class="mb-5">未完成訂單</h1>
 
 <div class="accordion" id="accordionPanelsStayOpenExample">
+    {{#unless unfinishedOrders}}
+    <h2>目前沒有未完成訂單</h2>
+    {{/unless}}
+
     {{#each unfinishedOrders}}
     <div class="accordion-item mb-3">
         <h2 class="accordion-header" id="panelsStayOpen-heading-{{this.id}}">

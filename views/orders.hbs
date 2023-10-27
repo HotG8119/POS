@@ -1,0 +1,86 @@
+<h1>今日完成訂單</h1>
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    {{#unless orders}}
+    <h2>目前沒有訂單</h2>
+    {{/unless}}
+
+    {{#each orders}}
+    <div class="accordion-item mb-3">
+        <h2 class="accordion-header" id="panelsStayOpen-heading-{{this.id}}">
+            <button class="accordion-button collapsed row" type="button" data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapse-{{this.id}}" aria-expanded="false"
+                aria-controls="panelsStayOpen-collapse-{{this.id}}" style="margin:0">
+                <div class="col-md-3">
+                    <h4>訂單編號: {{this.id}}</h4>
+                </div>
+                <div class="col-md-3">
+                    <h4>桌號: {{this.tableName}}</h4>
+                </div>
+                <div class="col-md-3">
+                    <h4>總金額: {{this.totalAmount}}</h4>
+                </div>
+                <div class="col-md-3">
+                    <h4>付款方式: {{this.paymentMethod}}</h4>
+                </div>
+
+            </button>
+        </h2>
+        <div id="panelsStayOpen-collapse-{{this.id}}" class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-heading-{{this.id}}">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4>訂單時間: {{this.createdAt}}</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>出餐時間: {{this.completedAt}}</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>付款時間: {{this.paidAt}}</h4>
+                    </div>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">產品名稱</th>
+                            <th scope="col">數量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each this.cartItems}}
+                        <tr>
+                            <td>{{this.name}}</td>
+                            <td>{{this.quantity}}</td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                {{!-- <div class="row mt-4">
+                    <div class="col-md-12">
+                        <h5>訂單備註</h5>
+                    </div>
+                    <div class="col-md-12">
+                        <textarea rows="4" class="form-control" readonly>{{this.notes}}</textarea>
+                    </div>
+                </div> --}}
+                {{!-- <div class="col-md-12 text-end">
+                    <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal"
+                        data-bs-target="#orderCheck" data-bs-whatever="{{this.id}}">訂單完成</button>
+                </div> --}}
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+<hr>
+<div>
+    <h3>
+        今日訂單數: {{orderCount}}
+    </h3>
+    <h3>
+        今日營業額: {{calculateAmount}}
+    </h3>
+
+</div>

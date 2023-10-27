@@ -1,6 +1,9 @@
-<h1 class="mb-5">未結帳訂單</h1>
+<h1 class="mb-5">未付款訂單</h1>
 
 <div class="accordion" id="accordionPanelsStayOpenExample">
+    {{#unless unpaidOrders}}
+    <h2>目前沒有未結帳訂單</h2>
+    {{/unless}}
     {{#each unpaidOrders}}
     <div class="accordion-item mb-3">
         <h2 class="accordion-header" id="panelsStayOpen-heading-{{this.id}}">

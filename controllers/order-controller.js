@@ -14,6 +14,22 @@ const {
 } = process.env
 
 const orderController = {
+  getTodayOrdersPage: (req, res, next) => {
+    orderService.getTodayOrdersPage(req, (err, data) => {
+      if (err) return next(err)
+      console.log(data)
+      let calculateAmount = 0
+      let orderCount = 0
+
+      data.forEach(order => {
+        // 計算今日營業額
+        calculateAmount += Number(order.totalAmount)
+        // 計算今日訂單數
+        orderCount += 1
+      })
+      return res.render('orders', { orders: data, calculateAmount, orderCount })
+    })
+  },
   postOrder: (req, res, next) => {
     const { tableId, cartItems } = req.body
     const cartItemsData = JSON.parse(cartItems)
@@ -57,6 +73,7 @@ const orderController = {
   getCheckoutPage: (req, res, next) => {
     orderService.getCheckoutPage(req, (err, data) => {
       if (err) return next(err)
+      console.log(data)
       return res.render('checkout', { checkoutOrder: data })
     })
   },

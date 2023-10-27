@@ -31,6 +31,7 @@ router.put('/orders/checkout/cash/:id', orderController.checkoutByCash)
 router.post('/orders/checkout/linepay/:id', orderController.checkoutByLinepay)
 router.get('/orders/checkout/:id', orderController.getCheckoutPage)
 
+router.get('/orders/today', orderController.getTodayOrdersPage)
 router.post('/orders', orderController.postOrder)
 
 router.get('/linepay/confirm', orderController.linepayConfirm)

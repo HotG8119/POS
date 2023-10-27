@@ -10,7 +10,8 @@
 
                 <th scope="col">產品名稱</th>
                 <th scope="col">數量</th>
-                <th scope="col">金額</th>
+                <th scope="col">單價</th>
+                <th scope="col">單項總額</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,7 @@
                 <td>{{this.name}}</td>
                 <td>{{this.quantity}}</td>
                 <td>{{this.price}}</td>
+                <td>{{this.amount}}</td>
             </tr>
             {{/each}}
         </tbody>
@@ -26,15 +28,35 @@
     <div class="col-md-12 text-end">
         <h4>總價: {{checkoutOrder.totalAmount}}</h4>
         <div class="d-flex flex-row-reverse">
-            <form action="/orders/checkout/cash/{{checkoutOrder.id}}?_method=PUT" method="POST" class="me-2">
-                <input type="hidden" name="paymentMethod" value="cash">
-                <button type="submit" class="btn btn-success mt-2">現金結帳</button>
-            </form>
+            <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal"
+                data-bs-target="#recheckButton">現金結帳</button>
             <form action="/orders/checkout/linepay/{{checkoutOrder.id}}" method="POST" class="me-2">
                 <input type="hidden" name="paymentMethod" value="cash">
                 <button type="submit" class="btn btn-success mt-2">Line Pay</button>
             </form>
         </div>
 
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="recheckButton" tabindex="-1" aria-labelledby="recheckButtonModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">現金結帳</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                確定已收到 <strong>{{checkoutOrder.totalAmount}} </strong>元現金嗎？
+            </div>
+            <div class="modal-footer">
+                <form action="/orders/checkout/cash/{{checkoutOrder.id}}?_method=PUT" method="POST" class="me-2">
+                    <input type="hidden" name="paymentMethod" value="cash">
+                    <button type="submit" class="btn btn-primary">是</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">否</button>
+            </div>
+        </div>
     </div>
 </div>
