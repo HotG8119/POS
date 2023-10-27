@@ -15,14 +15,11 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/products"
-                        class="nav-link px-2 text-secondary {{#if products}}text-white{{else}}text-secondary{{/if}}">點餐</a>
+                <li class="option"><a href="/products" class="nav-link px-2 text-secondary">點餐</a>
                 </li>
-                <li><a href="/orders/unfinished"
-                        class="nav-link px-2 {{#if unfinishedOrders}}text-white{{else}}text-secondary{{/if}}">未完成訂單</a>
+                <li class="option"><a href="/orders/unfinished" class="nav-link px-2 ">未完成訂單</a>
                 </li>
-                <li><a href="/orders/unpaid"
-                        class="nav-link px-2 {{#if unpaidOrders}}text-white{{else}}text-secondary{{/if}}">未付款訂單</a>
+                <li class="option"><a href="/orders/unpaid" class="nav-link px-2 ">未付款訂單</a>
                 </li>
             </ul>
 
@@ -39,3 +36,16 @@
         </div>
     </div>
 </header>
+
+<script>
+    const path = window.location.pathname;
+    const liElements = document.querySelectorAll('.option');
+    liElements.forEach(li => {
+        const a = li.querySelector('a');
+        if (a.getAttribute('href') === path) {
+            a.classList.add('text-white');
+        } else {
+            a.classList.add('text-secondary');
+        }
+    });
+</script>
