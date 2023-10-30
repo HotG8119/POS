@@ -13,8 +13,8 @@
                     <use xlink:href="#bootstrap"></use>
                 </svg>
             </a>
-
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                {{#if user}}
                 <li class="option"><a href="/products" class="nav-link px-2 text-secondary">點餐</a>
                 </li>
                 <li class="option"><a href="/orders/unfinished" class="nav-link px-2 ">未完成訂單</a>
@@ -23,9 +23,10 @@
                 </li>
                 <li class="option"><a href="/orders/today" class="nav-link px-2 ">今日完成訂單</a>
                 </li>
+                {{/if}}
             </ul>
-
             <div class="text-end">
+                {{user.name}}
                 {{#if user.isAdmin}}
                 <a href="/admin" method="get" class="btn btn-outline-light">後台</a>
                 {{/if}}
