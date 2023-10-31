@@ -7,7 +7,7 @@ const userController = {
   signUp: (req, res, next) => {
     userServices.signUp(req, (err, data) => {
       if (err) return next(err)
-      return res.redirect('/login')
+      return res.redirect('/admins/index')
     })
   },
   logInPage: (req, res) => {

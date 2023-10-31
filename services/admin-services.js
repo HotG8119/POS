@@ -1,5 +1,5 @@
-// const bcrypt = require('bcryptjs')
-const { Product, Category } = require('../models')
+const dayjs = require('dayjs')
+const { Product, Category, Table, Order } = require('../models')
 const { imgurFileHandler } = require('../helpers/file-helpers')
 
 const adminServices = {
@@ -142,7 +142,43 @@ const adminServices = {
       await category.update({ name })
       return cb(null)
     } catch (error) {
+      return cb(error)
+    }
+  },
+  getOrders: async (req, cb) => {
+    try {
+      const products = await Product.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['id', 'name']
+      })
 
+      const orders = await Order.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['id', 'cart_items', 'total_amount', 'payment_method', 'paid_at', 'created_at'],
+        include: [
+          { model: Table, attributes: ['id', 'name'] }
+        ],
+        order: [['created_at', 'DESC']]
+      })
+
+      orders.forEach(order => {
+        // 用order.cart_items.id去找對應的product
+        order.cart_items = order.cart_items.map(item => {
+          item.product = products.find(product => Number(product.id) === Number(item.id))
+          return item
+        })
+
+        order.payment_method = order.payment_method ? order.payment_method : '尚未付款'
+        order.paid_at = order.paid_at ? dayjs(order.paid_at).format('MM-DD HH:mm') : '尚未付款'
+        order.created_at = dayjs(order.created_at).format('MM-DD HH:mm')
+        return order
+      })
+
+      return cb(null, orders)
+    } catch (err) {
+      return cb(err)
     }
   }
 }

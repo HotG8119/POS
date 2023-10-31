@@ -1,3 +1,4 @@
+const dayjs = require('dayjs')
 const adminServices = require('../services/admin-services')
 
 const adminController = {
@@ -69,8 +70,80 @@ const adminController = {
       if (err) return next(err)
       return res.redirect('/admin/categories')
     })
+  },
+  getOrders: (req, res, next) => {
+    adminServices.getOrders(req, (err, data) => {
+      if (err) return next(err)
+      const ordersByMonth = groupOrdersByMonth(data)
+      console.log(ordersByMonth)
+
+      return res.render('admin/orders', { ordersByMonth })
+    })
+  }
+}
+
+function groupOrdersByMonth (orders) {
+  const ordersByMonth = []
+  const months = {}
+
+  for (const order of orders) {
+    const createdDate = dayjs(order.created_at)
+    const monthName = createdDate.format('MMM') // 取得月份的縮寫，例如 'Jan' 表示一月
+
+    if (!months[monthName]) {
+      months[monthName] = []
+    }
+
+    months[monthName].push(order)
   }
 
+  for (const month in months) {
+    const totalAmountMonth = months[month].reduce((total, order) => total + parseFloat(order.total_amount), 0)
+    const orderQtyMonth = months[month].length
+    // 計算每個月用linepay的總金額及訂單數
+    const linepayTotalAmountMonth = months[month].reduce((total, order) => {
+      if (order.payment_method === 'linepay') {
+        return total + parseFloat(order.total_amount)
+      } else {
+        return total
+      }
+    }, 0)
+    const linepayOrderQtyMonth = months[month].reduce((total, order) => {
+      if (order.payment_method === 'linepay') {
+        return total + 1
+      } else {
+        return total
+      }
+    }, 0)
+    // 計算每個月用cash的總金額及訂單數
+    const cashTotalAmountMonth = months[month].reduce((total, order) => {
+      if (order.payment_method === 'cash') {
+        return total + parseFloat(order.total_amount)
+      } else {
+        return total
+      }
+    }, 0)
+    const cashOrderQtyMonth = months[month].reduce((total, order) => {
+      if (order.payment_method === 'cash') {
+        return total + 1
+      } else {
+        return total
+      }
+    }, 0)
+
+    ordersByMonth.push({
+      month,
+      orders: months[month],
+      totalAmountMonth,
+      orderQtyMonth,
+      linepayTotalAmountMonth,
+      linepayOrderQtyMonth,
+      cashTotalAmountMonth,
+      cashOrderQtyMonth
+    })
+  }
+
+  return ordersByMonth
 }
 
 module.exports = adminController

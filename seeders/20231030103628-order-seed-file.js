@@ -38,9 +38,9 @@ function randomPaymentMethod () {
 
 function randomPastDate () {
   const now = dayjs()
-  const randomDays = Math.floor(Math.random() * 60)
+  const randomDays = Math.floor(Math.random() * 30)
   const past = now.subtract(randomDays, 'day')
-  const randomTime = faker.date.between(past.subtract(2, 'month').toDate(), past.toDate())
+  const randomTime = faker.date.between(past.subtract(1, 'month').toDate(), past.toDate())
   return randomTime
 }
 
