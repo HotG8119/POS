@@ -79,6 +79,12 @@ const adminController = {
 
       return res.render('admin/orders', { ordersByMonth })
     })
+  },
+  deleteOrder: (req, res, next) => {
+    adminServices.deleteOrder(req, (err, data) => {
+      if (err) return next(err)
+      return res.redirect('/admin/orders')
+    })
   }
 }
 

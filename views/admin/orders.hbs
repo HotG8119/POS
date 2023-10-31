@@ -73,6 +73,10 @@
                         {{/each}}
                     </tbody>
                 </table>
+                <div class="col-md-12 text-end">
+                    <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal"
+                        data-bs-target="#deleteCheck" data-bs-whatever="{{this.id}}">刪除訂單</button>
+                </div>
             </div>
         </div>
     </div>
@@ -80,3 +84,41 @@
     <hr>
     {{/each}}
 </div>
+
+{{! Modal }}
+<div class="modal fade" id="deleteCheck" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">確定刪除 訂單編號：嗎？</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-footer">
+                <form class="row" action="" method="POST" id="checkAgain">
+                    <button type="submit" class="btn btn-danger">刪除訂單</button>
+                </form>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">否</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const deleteCheck = document.querySelector('#deleteCheck')
+    deleteCheck.addEventListener('show.bs.modal', function (event) {
+        // Button that triggered the modal
+        const button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        const recipient = button.getAttribute('data-bs-whatever')
+        // If necessary, you could initiate an AJAX request here
+        // and then do the updating in a callback.
+        //
+        // Update the modal's content.
+        const modalTitle = deleteCheck.querySelector('.modal-title')
+        const checkAgain = deleteCheck.querySelector('#checkAgain')
+
+        modalTitle.textContent = `確定刪除 訂單編號：${recipient} 嗎？`
+        checkAgain.action = `/admin/orders/${recipient}?_method=DELETE`
+    })
+</script>

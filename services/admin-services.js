@@ -180,6 +180,17 @@ const adminServices = {
     } catch (err) {
       return cb(err)
     }
+  },
+  deleteOrder: async (req, cb) => {
+    try {
+      const order = await Order.findByPk(req.params.id)
+      if (!order) throw new Error('找不到該訂單！')
+      await order.destroy()
+      req.flash('success_messages', '成功刪除訂單！')
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
   }
 }
 
