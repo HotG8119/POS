@@ -6,6 +6,7 @@
         <label class="form-label" for="email">信箱</label>
         <input class="form-control" id="email" type="text" name="email" class="form-control" placeholder="Email"
             required autofocus>
+
     </div>
     <div class="form-row mb-3">
         <label class="form-label" for="password">密碼</label>
@@ -15,5 +16,18 @@
     <button class="btn btn-primary btn-block" type="submit">登入</button>
 </form>
 <div class="mb-4 text-center">
-    <p><a href="/signup">Sign Up</a></p>
+    測試帳號：admin@example.com
+    <br>
+    測試密碼：123
+    <br>
+    <button id="add-to-form">填入帳號</button>
 </div>
+
+<script>
+    const addToFormButton = document.getElementById('add-to-form');
+    addToFormButton.addEventListener('click', () => {
+        document.getElementById('email').value = 'admin@example.com'
+        document.getElementById('password').value = '123'
+    })
+
+</script>

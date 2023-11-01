@@ -1,12 +1,64 @@
-<h1>餐點</h1>
+<h1>餐點 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasPorducts" aria-controls="offcanvasExample">
+        使用說明
+    </button></h1>
 <a href='/admin/products' class="btn btn-primary">餐點清單</a>
 <a href='/admin/products/create' class="btn btn-primary">新增餐點</a>
 <a href='/admin/categories' class="btn btn-primary">分類清單</a>
 <hr>
-<h1>人員</h1>
+<h1>人員 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasStaff"
+        aria-controls="offcanvasExample">
+        使用說明
+    </button></h1>
 <a href='/admin/users' class="btn btn-primary">人員清單</a>
 <a href='/signup' class="btn btn-primary">新增人員</a>
 <hr>
-<h1>訂單</h1>
+<h1>訂單 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasOrders" aria-controls="offcanvasExample">
+        使用說明
+    </button></h1>
 <a href='/admin/orders' class="btn btn-primary">歷史訂單</a>
 <hr>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasPorducts" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">餐點 使用說明</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul>
+            <li><span style="color: brown;">餐點清單</span>頁面中，可以對餐點刪除或修改資訊。</li>
+            <li><span style="color: brown;">新增餐點</span>頁面中，可以新增餐點，並選擇分類。</li>
+            </li>
+            <li>
+                <span style="color: brown;">分類清單</span>頁面中，可以對分類增刪改查。
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasStaff" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">人員 使用說明</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul>
+            <li><span style="color: brown;">人員清單</span>頁面中，可以刪除或是改變權限。無法將最後一個 admin 取消權限。</li>
+            <li><span style="color: brown;">新增人員</span>頁面中，可以新增員工帳號，並可以選擇權限。</li>
+
+        </ul>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasOrders" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">訂單 使用說明</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul>
+            <li><span style="color: brown;">歷史訂單</span>頁面中，訂單用月份來分類。如要刪除訂單，也可在此頁面刪除。</li>
+        </ul>
+    </div>
+</div>

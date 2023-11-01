@@ -7,7 +7,6 @@ const orderServices = {
     try {
       const startDate = dayjs().startOf('day').toDate()
       const endDate = dayjs().endOf('day').toDate()
-      console.log(startDate, endDate)
 
       // 找到所有 completed_at != null 的 order 並由新到舊排序
       const orders = await Order.findAll({
@@ -226,8 +225,6 @@ const orderServices = {
   },
   LinepaySuccess: async (orderId, cb) => {
     try {
-      console.log(orderId)
-      // const { orderId } = req.body
       const order = await Order.findByPk(orderId)
 
       await order.update({ paymentMethod: 'linepay', paidAt: new Date() })

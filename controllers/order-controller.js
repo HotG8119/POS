@@ -17,7 +17,6 @@ const orderController = {
   getTodayOrdersPage: (req, res, next) => {
     orderService.getTodayOrdersPage(req, (err, data) => {
       if (err) return next(err)
-      console.log(data)
       let calculateAmount = 0
       let orderCount = 0
 
@@ -73,7 +72,6 @@ const orderController = {
   getCheckoutPage: (req, res, next) => {
     orderService.getCheckoutPage(req, (err, data) => {
       if (err) return next(err)
-      console.log(data)
       return res.render('checkout', { checkoutOrder: data })
     })
   },

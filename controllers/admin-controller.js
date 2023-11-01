@@ -48,7 +48,6 @@ const adminController = {
   getCategoriesPage: (req, res, next) => {
     // 這裡的req.params.id是指編輯的那個category的id 傳到adminServices的getCategoriesPage
     adminServices.getCategoriesPage(req, (err, data) => {
-      console.log(data)
       if (err) return next(err)
       return res.render('admin/categories', { categories: data.categories, category: data.category })
     })
@@ -75,7 +74,6 @@ const adminController = {
     adminServices.getOrders(req, (err, data) => {
       if (err) return next(err)
       const ordersByMonth = groupOrdersByMonth(data)
-      console.log(ordersByMonth)
 
       return res.render('admin/orders', { ordersByMonth })
     })

@@ -23,8 +23,13 @@
                 </li>
                 <li class="option"><a href="/orders/today" class="nav-link px-2 ">今日完成訂單</a>
                 </li>
+                <li><button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                        使用說明
+                    </button></li>
                 {{/if}}
             </ul>
+
             <div class="text-end">
                 {{user.name}}
                 {{#if user.isAdmin}}
@@ -39,6 +44,26 @@
         </div>
     </div>
 </header>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">使用流程</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ol>
+            <li><span style="color: brown;">點餐</span>頁面中，可以將餐點加入購物車，並選擇桌號/外帶。備註為選填。</li>
+            <li>購物車送出後，會將訂單顯示在<span style="color: brown;">未完成訂單</span>。完成時可確認送<span style="color: brown;">未付款訂單</span>。
+            </li>
+            <li><span style="color: brown;">未付款訂單</span>裡，選擇要付款的訂單，可以確認餐點。確認完後可選擇<strong>現金支付</strong>或<strong>line
+                    pay支付</strong>(sandbox不會扣款)
+            </li>
+            <li>
+                <span style="color: brown;">今日完成訂單</span>頁面，只會顯示今日訂單的細項。如要看歷史訂單需登入admin權限帳號。
+            </li>
+        </ol>
+    </div>
+</div>
 
 <script>
     const path = window.location.pathname;
