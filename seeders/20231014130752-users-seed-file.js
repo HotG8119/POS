@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Users', {})
     await queryInterface.bulkInsert('Users', [{ // 一次新增三筆資料
       email: 'admin@example.com',
       password: await bcrypt.hash('123', 10),
@@ -26,6 +25,7 @@ module.exports = {
       created_at: new Date(),
       updated_at: new Date()
     }], {})
+    console.log('created admin and users')
   },
 
   async down (queryInterface, Sequelize) {

@@ -3,7 +3,6 @@ const faker = require('faker')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Products', {})
     // 找出所有的 category
     const categories = await queryInterface.sequelize.query(
       'SELECT id FROM Categories;',
