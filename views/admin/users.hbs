@@ -19,11 +19,11 @@
             <td>{{#if this.isAdmin}}是{{else}}否{{/if}} <form action="/admin/users/{{this.id}}?_method=PUT" method="POST"
                     style="display: inline;">
                     <button type="button" class="btn btn-link link-warning" data-bs-toggle="modal"
-                        data-bs-target="#deleteModal{{this.id}}">轉換權限</button>
+                        data-bs-target="#changeModal{{this.id}}">轉換權限</button>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="deleteModal{{this.id}}" tabindex="-1"
-                        aria-labelledby="deleteModal{{this.id}}Label" aria-hidden="true">
+                    <div class="modal fade" id="changeModal{{this.id}}" tabindex="-1"
+                        aria-labelledby="changeModal{{this.id}}Label" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -48,7 +48,7 @@
 
 
 
-                <form action="/admin/products/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
+                <form action="/admin/users/{{this.id}}?_method=DELETE" method="POST" style="display: inline;">
                     <button type="button" class="btn btn-link link-danger" data-bs-toggle="modal"
                         data-bs-target="#deleteModal{{this.id}}">刪除</button>
 

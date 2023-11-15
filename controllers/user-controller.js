@@ -34,6 +34,13 @@ const userController = {
       req.flash('success_messages', '成功更新權限！')
       return res.redirect('/admin/users')
     })
+  },
+  deleteUser: (req, res, next) => {
+    userServices.deleteUser(req, (err, data) => {
+      if (err) return next(err)
+      req.flash('success_messages', '成功刪除使用者！')
+      return res.redirect('/admin/users')
+    })
   }
 }
 module.exports = userController
