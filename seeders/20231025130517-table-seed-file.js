@@ -3,6 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
+    await queryInterface.bulkDelete('Tables', {})
     const tables = []
     // 新增外帶
     tables.push({

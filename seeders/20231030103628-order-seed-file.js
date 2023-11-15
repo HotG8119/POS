@@ -46,6 +46,7 @@ function randomPastDate () {
 
 module.exports = {
   async up (queryInterface, Sequelize) {
+    await queryInterface.bulkDelete('Orders', {})
     const products = await queryInterface.sequelize.query('SELECT id,price FROM Products;', { type: queryInterface.sequelize.QueryTypes.SELECT })
     const tables = await queryInterface.sequelize.query('SELECT id FROM Tables;', { type: queryInterface.sequelize.QueryTypes.SELECT })
     const orders = []
