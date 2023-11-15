@@ -9,6 +9,7 @@ const admin = require('./modules/admin')
 const userController = require('../../controllers/user-controller')
 const productController = require('../../controllers/product-controller')
 const orderController = require('../../controllers/order-controller')
+const chatController = require('../../controllers/chat-controller')
 
 router.use('/admin', authenticatedAdmin, admin)
 
@@ -32,6 +33,8 @@ router.get('/orders/checkout/:id', authenticated, orderController.getCheckoutPag
 
 router.get('/orders/today', authenticated, orderController.getTodayOrdersPage)
 router.post('/orders', authenticated, orderController.postOrder)
+
+router.get('/chatRooms', authenticated, chatController.getChatRoomsPage)
 
 router.get('/linepay/confirm', authenticated, orderController.linepayConfirm)
 
