@@ -2,52 +2,65 @@
     <div class="row">
         <div class="col-12">
             <div id="content" class="border rounded"
-                style="height: 400px; overflow-y: scroll; margin-bottom: 20px; padding: 20px;"></div>
+                style="height: 400px; overflow-y: scroll; margin-bottom: 20px; padding: 20px;">
+                <table id="chat-content" class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-1"></th>
+                            <th scope="col" class="col-1"></th>
+                            <th scope="col" class="col-10"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="chat-content-tbody">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <div class="row">
+    <form id="chat-form" class="row">
         <div class="col-9">
             <input type="text" id="input" class="form-control">
         </div>
         <div class="col-3">
-            <button type="button" id="send-message-btn" class="btn btn-primary btn-block">送出</button>
+            <button type="submit" id="send-message-btn" class="btn btn-primary btn-block">送出</button>
         </div>
-    </div>
+    </form>
 </div>
 
+
+<script src="/socket.io/socket.io.js"></script>
 <script>
-    const ws = new WebSocket('ws://localhost:8080');
+    const socket = io();
+
+    const chatForm = document.querySelector('#chat-form');
     const sendMessageBtn = document.querySelector('#send-message-btn');
     const input = document.querySelector('#input');
+    const chatContentTbody = document.querySelector('#chat-content-tbody');
 
-    // Connection opened
-    ws.addEventListener("open", (event) => {
-        //socket.send("聊天室已連線!");
-    });
 
-    // Listen for messages
-    ws.addEventListener("message", (event) => {
-        // console.log("Message from server ", JSON.parse(event.data));
-        // 取得 #content 元素
-        const content = document.querySelector('#content');
-        // 將 WebSocket 傳來的資料轉成陣列，並且將每個元素包在 <p> 內
-        const data = JSON.parse(event.data);
-        // 將資料放入 #content 中
-        content.innerHTML = data.map((data) => `<p>${data.time} <strong>${data.userName}</strong>：${data.value}</p>`).join('');
-        scrollToBottom()
-        resetInput()
-    });
 
-    sendMessageBtn.addEventListener('click', () => {
-        const value = document.querySelector('#input').value.replace(/(^\s*)|(\s*$)/g, "").replace(/[\r\n]/g, "");
-        if (!value) {
-            resetInput()
-            return;
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const value = input.value.replace(/(^\s*)|(\s*$)/g, "").replace(/[\r\n]/g, "");
+        if (value) {
+            const userName = document.querySelector('#user-name').innerText;
+            socket.emit('chat message', { value: { userName, value } });
         }
-        const userName = document.querySelector('#user-name').innerText;
-        const data = JSON.stringify({ value, userName });
 
-        ws.send(data);
+        resetInput();
+    });
+
+    socket.on('connect', () => {
+        console.log('聊天室已連線!');
+    });
+
+    socket.on('chat message', (msg) => {
+        addMessageToTable(msg);
+        scrollToBottom();
+    })
+
+    socket.once('disconnect', () => {
+        console.log('聊天室已斷線!');
     });
 
     input.addEventListener('keypress', function (e) {
@@ -62,6 +75,22 @@
     }
 
     function resetInput() {
-        document.querySelector('#input').value = '';
+        input.value = '';
+    }
+
+    function addMessageToTable(msg) {
+        const time = document.createElement('td');
+        time.innerText = msg.value.time;
+        const userName = document.createElement('td');
+        userName.innerText = msg.value.userName;
+        const value = document.createElement('td');
+        value.innerText = msg.value.value;
+        //建立tr元素 並且將td元素放入
+        const tr = document.createElement('tr');
+        tr.appendChild(time);
+        tr.appendChild(userName);
+        tr.appendChild(value);
+        //將tr元素放入table中
+        chatContentTbody.appendChild(tr);
     }
 </script>
