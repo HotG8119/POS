@@ -6,12 +6,19 @@
                 <table id="chat-content" class="table table-borderless">
                     <thead>
                         <tr>
-                            <th scope="col" class="col-1"></th>
+                            <th scope="col" class="col-2"></th>
                             <th scope="col" class="col-1"></th>
                             <th scope="col" class="col-10"></th>
                         </tr>
                     </thead>
                     <tbody id="chat-content-tbody">
+                        {{#each messages}}
+                        <tr>
+                            <td>{{this.createdAt}}</td>
+                            <td>{{this.User.name}}</td>
+                            <td>{{this.content}}</td>
+                        </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div>
@@ -37,14 +44,17 @@
     const input = document.querySelector('#input');
     const chatContentTbody = document.querySelector('#chat-content-tbody');
 
-
+    scrollToBottom()
 
     chatForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const value = input.value.replace(/(^\s*)|(\s*$)/g, "").replace(/[\r\n]/g, "");
         if (value) {
+            // 從session拿到使用者名稱
             const userName = document.querySelector('#user-name').innerText;
-            socket.emit('chat message', { value: { userName, value } });
+            const userId = Number(document.querySelector('#user-name').dataset.userid);
+            // const userName = document.querySelector('#user-name').innerText;
+            socket.emit('chat message', { value: { userName, userId, value } });
         }
 
         resetInput();
