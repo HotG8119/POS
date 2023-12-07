@@ -1,24 +1,36 @@
 <div class="container">
     <h3>支付測試點餐機</h3>
     <option value=""></option>
+
+    <ul class="nav nav-pills">
+        <li class="nav-item">
+            <a class="nav-link {{#ifCond '' categoryId}}active{{/ifCond}}" href="?categoryId=">全部</a>
+        </li>
+        {{#each categories}}
+        <li class="nav-item">
+            <a class="nav-link {{#ifCond this.id ../categoryId}}active{{/ifCond}}"
+                href="?categoryId={{this.id}}">{{this.name}}</a>
+        </li>
+        {{/each}}
+    </ul>
+    <hr>
     <div class="row" id="menu">
         {{#each products}}
-        {{#if this.Products.id}}
+        {{#if this.id}}
         <div id="menu" class="card m-2" style="max-width: 400px;">
             <div class="row g-0">
 
                 <div class="col-md-5 d-flex align-items-center">
-                    <img class="img-fluid rounded-start" src="{{this.Products.image}}" alt="Card image cap">
+                    <img class="img-fluid rounded-start" src="{{this.image}}" alt="Card image cap">
                 </div>
                 <div class="col-md-7">
                     <div class="card-body">
-                        <h5 class="card-title"> {{this.Products.name}} </h5>
-                        <p style="font-size: 12px;">{{this.name}}</p>
-                        <p class="card-text">價格：{{this.Products.price}}</p>
-                        {{#if this.Products.isAvailable}}
-                        <button type="button" class="btn btn-primary btn-sm" data-id="{{this.Products.id}}"
-                            data-name="{{this.Products.name}}" data-price="{{this.Products.price}}"
-                            id='{{this.Products.id}}'>加入購物車</button>
+                        <h5 class="card-title"> {{this.name}} </h5>
+                        <p style="font-size: 12px;">{{this.Category.name}}</p>
+                        <p class="card-text">價格：{{this.price}}</p>
+                        {{#if this.isAvailable}}
+                        <button type="button" class="btn btn-primary btn-sm" data-id="{{this.id}}"
+                            data-name="{{this.name}}" data-price="{{this.price}}" id='{{this.id}}'>加入購物車</button>
                         {{else}}
                         <button type="button" class="btn btn-secondary btn-sm" disabled>暫無供應</button>
                         {{/if}}

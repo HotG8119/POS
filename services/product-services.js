@@ -3,15 +3,25 @@ const { Product, Category, Table } = require('../models')
 const productServices = {
   getProducts: async (req, cb) => {
     try {
-      const products = await Category.findAll({
+      const categoryId = Number(req.query.categoryId) || ''
+      const categories = await Category.findAll({
+        raw: true,
+        attributes: ['id', 'name']
+      })
+      const tables = await Table.findAll({
+        raw: true,
+        attributes: ['id', 'name']
+      })
+      const products = await Product.findAll({
         raw: true,
         nest: true,
-        attributes: ['id', 'name'],
-        include: [Product]
+        include: [Category],
+        where: {
+          ...categoryId ? { CategoryId: categoryId } : {}
+        },
+        attributes: ['id', 'name', 'price', 'image', 'description', 'isAvailable']
       })
-      const tables = await Table.findAll({ raw: true })
-
-      return cb(null, { products, tables })
+      return cb(null, { products, tables, categories, categoryId })
     } catch (err) {
       return cb(err)
     }
