@@ -1,0 +1,96 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div id="content" class="border rounded"
+                style="height: 400px; overflow-y: scroll; margin-bottom: 20px; padding: 20px;">
+                <table id="chat-content" class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-1"></th>
+                            <th scope="col" class="col-1"></th>
+                            <th scope="col" class="col-10"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="chat-content-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <form id="chat-form" class="row">
+        <div class="col-9">
+            <input type="text" id="input" class="form-control">
+        </div>
+        <div class="col-3">
+            <button type="submit" id="send-message-btn" class="btn btn-primary btn-block">送出</button>
+        </div>
+    </form>
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    const chatForm = document.querySelector('#chat-form');
+    const sendMessageBtn = document.querySelector('#send-message-btn');
+    const input = document.querySelector('#input');
+    const chatContentTbody = document.querySelector('#chat-content-tbody');
+
+
+
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const value = input.value.replace(/(^\s*)|(\s*$)/g, "").replace(/[\r\n]/g, "");
+        if (value) {
+            const userName = document.querySelector('#user-name').innerText;
+            socket.emit('chat message', { value: { userName, value } });
+        }
+
+        resetInput();
+    });
+
+    socket.on('connect', () => {
+        console.log('聊天室已連線!');
+    });
+
+    socket.on('chat message', (msg) => {
+        addMessageToTable(msg);
+        scrollToBottom();
+    })
+
+    socket.once('disconnect', () => {
+        console.log('聊天室已斷線!');
+    });
+
+    input.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendMessageBtn.click();
+        }
+    });
+
+    function scrollToBottom() {
+        const content = document.getElementById('content');
+        content.scrollTop = content.scrollHeight;
+    }
+
+    function resetInput() {
+        input.value = '';
+    }
+
+    function addMessageToTable(msg) {
+        const time = document.createElement('td');
+        time.innerText = msg.value.time;
+        const userName = document.createElement('td');
+        userName.innerText = msg.value.userName;
+        const value = document.createElement('td');
+        value.innerText = msg.value.value;
+        //建立tr元素 並且將td元素放入
+        const tr = document.createElement('tr');
+        tr.appendChild(time);
+        tr.appendChild(userName);
+        tr.appendChild(value);
+        //將tr元素放入table中
+        chatContentTbody.appendChild(tr);
+    }
+</script>

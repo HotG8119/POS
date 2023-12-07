@@ -23,6 +23,8 @@
                 </li>
                 <li class="option"><a href="/orders/today" class="nav-link px-2 ">今日完成訂單</a>
                 </li>
+                <li class="option"><a href="/chatRooms" class="nav-link px-2 ">聊天室</a>
+                </li>
                 <li><button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
                         data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
                         使用說明
@@ -31,7 +33,7 @@
             </ul>
 
             <div class="text-end">
-                {{user.name}}
+                <span id="user-name">{{user.name}}</span>
                 {{#if user.isAdmin}}
                 <a href="/admin" method="get" class="btn btn-outline-light">後台</a>
                 {{/if}}

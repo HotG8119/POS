@@ -12,14 +12,10 @@ module.exports = {
             updated_at: new Date()
           }
         }), {})
+    console.log('created categories')
   },
 
   async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
+    await queryInterface.bulkDelete('Categories', {})
   }
 }

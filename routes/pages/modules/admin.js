@@ -18,6 +18,7 @@ router.put('/categories/:id', adminController.putCategory)
 router.get('/categories', adminController.getCategoriesPage)
 router.post('/categories', adminController.postCategory)
 
+router.delete('/users/:id', userController.deleteUser)
 router.put('/users/:id', userController.patchUser)
 router.get('/users', userController.getUsers)
 

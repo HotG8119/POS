@@ -25,6 +25,7 @@ module.exports = {
       created_at: new Date(),
       updated_at: new Date()
     }], {})
+    console.log('created admin and users')
   },
 
   async down (queryInterface, Sequelize) {
