@@ -1,11 +1,36 @@
 const menu = document.getElementById('menu')
+const tableSelect = document.getElementById('table-id')
 const cart = document.getElementById('cart')
 const totalAmount = document.getElementById('total-amount')
 const button = document.getElementById('submit-button')
 const resetCartButton = document.getElementById('reset-cart-button')
+const submitBtn = document.getElementById('submit-button')
 
 let total = 0
 const cartItems = []
+
+function init () {
+  const cartItemsData = JSON.parse(localStorage.getItem('cartItems')) || []
+  const tableId = localStorage.getItem('tableId')
+  if (cartItemsData.length > 0) {
+    // 將localStorage的資料放到cartItems
+    cartItems.push(...cartItemsData)
+    // 畫面顯示購物車清單
+    cart.innerHTML = cartItems.map(item => `
+  <li class="list-group-item">
+    ${item.name} X ${item.quantity} 共：${item.price * item.quantity}
+    <button type="button" class="delete-all-button btn btn-danger btn-sm float-end" data-id="${item.id}">删除</button>
+    <button type="button" class="delete-button btn btn-secondary btn-sm float-end me-2" data-id="${item.id}">-1</button>
+  </li>
+`).join('')
+    // 計算總金額
+    calculateTotal(cartItems)
+  }
+
+  if (tableId) {
+    tableSelect.value = tableId
+  }
+}
 
 function addToCart (event) {
   const id = event.target.dataset.id
@@ -38,6 +63,9 @@ function addToCart (event) {
 
   // 計算總金額
   calculateTotal(cartItems)
+
+  // 將購物車資料更新到localStorage
+  localStorage.setItem('cartItems', JSON.stringify(cartItems))
 }
 
 function deleteCartItem (event) {
@@ -65,6 +93,9 @@ function deleteCartItem (event) {
   }
   // 計算總金額
   calculateTotal(cartItems)
+
+  // 將購物車資料更新到localStorage
+  localStorage.setItem('cartItems', JSON.stringify(cartItems))
 }
 
 // 7.計算總金額
@@ -110,6 +141,9 @@ function reset () {
   cartItems.length = 0
   cart.innerHTML = ''
   totalAmount.textContent = total
+
+  // 將localStorage的資料清空
+  localStorage.removeItem('cartItems')
 }
 
 function addCartItemsToValue (cartItems) {
@@ -124,6 +158,8 @@ function addCartItemsToValue (cartItems) {
 }
 
 // 10. 加入事件監聽
+init()
+
 menu.addEventListener('click', addToCart)
 cart.addEventListener('click', deleteCartItem)
 button.addEventListener('click', () => {
@@ -131,3 +167,15 @@ button.addEventListener('click', () => {
   // reset()
 })
 resetCartButton.addEventListener('click', reset)
+
+tableSelect.addEventListener('change', e => {
+  console.log('GGG')
+  const tableId = event.target.value
+
+  localStorage.setItem('tableId', tableId)
+})
+
+submitBtn.addEventListener('click', () => {
+  localStorage.removeItem('cartItems')
+  localStorage.removeItem('tableId')
+})
