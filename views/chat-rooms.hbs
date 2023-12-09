@@ -13,7 +13,7 @@
                     </thead>
                     <tbody id="chat-content-tbody">
                         {{#each messages}}
-                        <tr {{#if this.message_type}}class="alert alert-warning" {{/if}}>
+                        <tr {{#ifCond this.message_type 'order' }}class="alert alert-warning" {{/ifCond}}>
                             <td>{{this.createdAt}}</td>
                             <td>{{this.User.name}}</td>
                             {{#if this.message_type}}
