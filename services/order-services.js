@@ -3,6 +3,36 @@ const { Op } = require('sequelize')
 const { Order, Product, Table } = require('../models')
 
 const orderServices = {
+  getOrder: async (req, cb) => {
+    try {
+      const orderId = Number(req.params.id)
+      const order = await Order.findByPk(orderId,
+        {
+          raw: true,
+          nest: true,
+          include: [{ model: Table, attributes: ['name'] }],
+          attributes: ['id', 'cartItems', 'notes', 'createdAt', 'completedAt']
+        })
+      if (!order) throw new Error('此訂單不存在！')
+      const products = await Product.findAll({
+        raw: true,
+        attributes: ['id', 'name']
+      })
+      // 將order的cartItems用id找到對應的product，並加入name,到cartItems
+      // createdAt轉成 HH:mm
+      order.cartItems.forEach(item => {
+        const itemId = Number(item.id)
+        // 用itemId找到對應的product
+        const product = products.find(product => product.id === itemId)
+        item.name = product.name
+      })
+      order.createdAt = dayjs(order.createdAt).format('HH:mm')
+
+      return cb(null, order)
+    } catch (err) {
+      return cb(err)
+    }
+  },
   getTodayOrdersPage: async (req, cb) => {
     try {
       const startDate = dayjs().startOf('day').toDate()

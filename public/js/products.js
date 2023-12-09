@@ -169,7 +169,6 @@ button.addEventListener('click', () => {
 resetCartButton.addEventListener('click', reset)
 
 tableSelect.addEventListener('change', e => {
-  console.log('GGG')
   const tableId = event.target.value
 
   localStorage.setItem('tableId', tableId)

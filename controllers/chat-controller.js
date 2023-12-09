@@ -27,7 +27,6 @@ const chatController = {
             userId: req.user.id
           })
 
-          console.log(msg)
           io.emit('chat message', msg)
         })
 

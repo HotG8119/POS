@@ -7,12 +7,11 @@ const chatServices = {
         raw: true,
         nest: true,
         order: [['createdAt', 'ASC']],
-        attributes: ['id', 'content', 'createdAt'],
+        attributes: ['id', 'content', 'createdAt', 'message_type'],
         include: [
           User,
           { model: User, attributes: ['name'] }
         ]
-
       })
 
       return cb(null, messages)

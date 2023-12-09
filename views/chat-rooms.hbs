@@ -13,10 +13,23 @@
                     </thead>
                     <tbody id="chat-content-tbody">
                         {{#each messages}}
-                        <tr>
+                        <tr {{#if this.message_type}}class="alert alert-warning" {{/if}}>
                             <td>{{this.createdAt}}</td>
                             <td>{{this.User.name}}</td>
+                            {{#if this.message_type}}
+                            <td>
+                                <a tabindex="0" class="order-btn btn btn-link" role="button" data-bs-toggle="popover"
+                                    data-bs-trigger="focus" title="Dismissible popover"
+                                    data-bs-content="And here's some amazing content. It's very engaging. Right?"
+                                    style="margin: 0;padding: 0;">
+                                    {{this.content}}
+                                </a>
+
+
+                            </td>
+                            {{else}}
                             <td>{{this.content}}</td>
+                            {{/if}}
                         </tr>
                         {{/each}}
                     </tbody>
@@ -34,8 +47,14 @@
     </form>
 </div>
 
-
 <script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script>
 <script>
     const socket = io();
 
@@ -43,8 +62,12 @@
     const sendMessageBtn = document.querySelector('#send-message-btn');
     const input = document.querySelector('#input');
     const chatContentTbody = document.querySelector('#chat-content-tbody');
+    let orderBtns = document.querySelectorAll('.order-btn');
+
+    let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 
     scrollToBottom()
+    setOrderBtns()
 
     chatForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -66,6 +89,11 @@
 
     socket.on('chat message', (msg) => {
         addMessageToTable(msg);
+        scrollToBottom();
+    })
+
+    socket.on('order message', (msg) => {
+        addOrderToTable(msg);
         scrollToBottom();
     })
 
@@ -103,4 +131,77 @@
         //將tr元素放入table中
         chatContentTbody.appendChild(tr);
     }
+
+    function addOrderToTable(msg) {
+        const time = document.createElement('td');
+        time.innerText = msg.value.time;
+        const userName = document.createElement('td');
+        userName.innerText = msg.value.userName;
+        const value = document.createElement('td');
+        const link = document.createElement('a');
+        link.setAttribute('tabindex', '0');
+        link.setAttribute('class', 'order-btn btn btn-link');
+        link.setAttribute('role', 'button');
+        link.setAttribute('data-bs-toggle', 'popover');
+        link.setAttribute('data-bs-trigger', 'focus');
+        link.setAttribute('title', 'Dismissible popover');
+        link.setAttribute('data-bs-content', 'And here\'s some amazing content. It\'s very engaging. Right?');
+        link.setAttribute('style', 'margin: 0;padding: 0;');
+        link.innerText = msg.value.value;
+        value.appendChild(link);
+
+        //value.innerText = msg.value.value;
+        //建立tr元素 並且將td元素放入
+        const tr = document.createElement('tr');
+        tr.appendChild(time);
+        tr.appendChild(userName);
+        tr.appendChild(value);
+        tr.classList.add("alert", "alert-warning")
+
+        //將tr元素放入table中
+        chatContentTbody.appendChild(tr);
+
+        //重新設定popoverTriggerList及orderBtns
+        popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        orderBtns = document.querySelectorAll('.order-btn');
+        setOrderBtns()
+
+    }
+
+    //
+    function setOrderBtns() {
+        orderBtns.forEach((orderBtn) => {
+            orderBtn.addEventListener('click', async (e) => {
+                try {
+                    e.preventDefault();
+                    const orderId = e.target.innerText.substring(5, 9)
+
+                    if (orderId) {
+                        const res = await axios.get(`/orders/${orderId}`)
+                        const order = await res.data
+                        // 設置 Popover 的內容
+                        let orderDetail = ''
+                        //將order.cartItems放入orderDetail中
+                        order.cartItems.forEach((item) => {
+                            orderDetail += `${item.name} x ${item.quantity}<br>`
+                        })
+                        orderBtn.setAttribute('title', `訂單編號 ${order.id}`);
+                        orderBtn.setAttribute('data-bs-content', orderDetail);
+
+                        const popover = new bootstrap.Popover(orderBtn, {
+                            html: true,
+                            trigger: 'focus',
+                            content: orderDetail,
+                            title: `訂單編號 ${order.id}`,
+                        });
+                        popover.show()
+                    }
+                } catch (err) {
+                    console.log(err)
+                }
+            })
+        })
+    }
+
+
 </script>
