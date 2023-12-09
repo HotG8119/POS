@@ -32,6 +32,7 @@ router.post('/orders/checkout/linepay/:id', authenticated, orderController.check
 router.get('/orders/checkout/:id', authenticated, orderController.getCheckoutPage)
 
 router.get('/orders/today', authenticated, orderController.getTodayOrdersPage)
+router.get('/orders/:id', authenticated, orderController.getOrder)
 router.post('/orders', authenticated, orderController.postOrder)
 
 router.get('/chatRooms', authenticated, chatController.getChatRoomsPage)

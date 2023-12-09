@@ -51,6 +51,8 @@
                     </div>
                 </div>
                 <div class="col-md-12 text-end">
+                    <input type="text" class="toChatInput form-control mt-2" placeholder="追加提醒">
+                    <button type="button" class="toChatBtn btn btn-warning mt-2" data-order="{{this.id}}">傳至聊天室</button>
                     <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal"
                         data-bs-target="#orderCheck" data-bs-whatever="{{this.id}}">訂單完成</button>
                 </div>
@@ -79,8 +81,13 @@
     </div>
 </div>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
+    const socket = io()
+
     const orderCheck = document.querySelector('#orderCheck')
+    const toChatBtn = document.querySelectorAll('.toChatBtn')
+
     orderCheck.addEventListener('show.bs.modal', function (event) {
         // Button that triggered the modal
         const button = event.relatedTarget
@@ -96,4 +103,26 @@
         modalTitle.textContent = `訂單編號: ${recipient} 確定完成了嗎？`
         checkAgain.action = `/orders/unfinished/${recipient}?_method=PUT`
     })
+
+    toChatBtn.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            //const toChatInput = document.querySelectorAll('.toChatInput').value.replace(/(^\s*)|(\s*$)/g, "").replace(/[\r\n]/g, "");
+            let toChatInput = e.target.previousElementSibling.value.replace(/(^\s*)|(\s*$)/g, "").replace(/[\r\n]/g, "");
+            if (toChatInput !== '') {
+                const orderId = e.target.dataset.order
+                const userName = document.querySelector('#user-name').innerText;
+                const userId = Number(document.querySelector('#user-name').dataset.userid);
+                //const value = `訂單編號 ${orderId} ：${toChatInput}`
+                const value = `訂單編號 ${orderId}：${toChatInput}`
+                socket.emit('order message', { value: { userName, userId, value } });
+
+                alert(`訂單編號 ${orderId}：${toChatInput}\n已傳送至聊天室`)
+
+                e.target.previousElementSibling.value = ''
+            }
+        })
+    })
+
+
+
 </script>

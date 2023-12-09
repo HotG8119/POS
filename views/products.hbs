@@ -64,7 +64,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     桌號：
-                                    <select name="tableId" class="m-2" required>
+                                    <select id="table-id" name="tableId" class="m-2" required>
                                         <option value="" disabled selected>請選擇桌號</option>
                                         {{#each tables}}
                                         <option value="{{this.id}}">{{this.name}}</option>

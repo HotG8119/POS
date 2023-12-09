@@ -1,8 +1,10 @@
 const { HmacSHA256 } = require('crypto-js')
 const Base64 = require('crypto-js/enc-base64')
 const axios = require('axios')
+const dayjs = require('dayjs')
 
 const orderService = require('../services/order-services')
+const { Message } = require('../models')
 const {
   LINEPAY_VERSION,
   LINEPAY_SITE,
@@ -14,6 +16,13 @@ const {
 } = process.env
 
 const orderController = {
+  getOrder: (req, res, next) => {
+    orderService.getOrder(req, (err, data) => {
+      if (err) return next(err)
+
+      return res.json(data)
+    })
+  },
   getTodayOrdersPage: (req, res, next) => {
     orderService.getTodayOrdersPage(req, (err, data) => {
       if (err) return next(err)
@@ -53,6 +62,29 @@ const orderController = {
     orderService.getUnfinishedOrdersPage(req, (err, data) => {
       if (err) return next(err)
       return res.render('unfinished-orders', { unfinishedOrders: data })
+    })
+
+    const io = req.app.io
+
+    io.once('connection', socket => {
+      console.log('使用者連接')
+      socket.on('error', console.error)
+
+      socket.on('order message', msg => {
+        msg.value.time = dayjs().format('MM-DD HH:mm')
+        Message.create({
+          content: msg.value.value,
+          userId: req.user.id,
+          message_type: 'order'
+        })
+        console.log(msg)
+        io.emit('order message', msg)
+      })
+
+      socket.on('disconnect', () => {
+        console.log('使用者離開')
+      }
+      )
     })
   },
   finishOrder: (req, res, next) => {

@@ -33,7 +33,7 @@
             </ul>
 
             <div class="text-end">
-                <span id="user-name">{{user.name}}</span>
+                <span id="user-name" data-userId="{{user.id}}">{{user.name}}</span>
                 {{#if user.isAdmin}}
                 <a href="/admin" method="get" class="btn btn-outline-light">後台</a>
                 {{/if}}
