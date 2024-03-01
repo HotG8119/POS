@@ -18,8 +18,6 @@ const userServices = {
         password: hash,
         isAdmin: !!admin
       })
-
-      req.flash('success_messages', '成功註冊帳號！')
       return cb(null)
     } catch (err) {
       return cb(err)
