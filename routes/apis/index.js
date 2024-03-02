@@ -6,7 +6,7 @@ const userController = require('../../controllers/apis/user-controller')
 const productController = require('../../controllers/apis/product-controller')
 
 // router.use('/admin', authenticated, authenticatedAdmin, adminController.XXXX)
-router.post('/signup', userController.signUp)
+router.post('/signup', authenticated, authenticatedAdmin, userController.signUp)
 router.post('/login', passport.authenticate('local', { session: false }), userController.login)
 
 router.get('/products', authenticated, productController.getProducts)

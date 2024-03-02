@@ -3,38 +3,6 @@ const jwt = require('jsonwebtoken')
 const userServices = require('../../services/user-services')
 
 const userController = {
-  signUp: (req, res, next) => {
-    try {
-      userServices.signUp(req, (err, data) => {
-        if (err) return next(err)
-        res.status(200).json({
-          status: 'success',
-          message: '成功註冊帳號！'
-        })
-      })
-    } catch (err) {
-      console.log(err)
-    }
-
-    // userServices.signUp(req, (err, data) => {
-
-    //     res.status(200).json({
-    //       status: 'success',
-    //       message: '成功註冊帳號！'
-    //     })
-    //   } catch (err) {
-    //     // console.log(err)
-    //     res.status(500).json({
-    //       status: 'error',
-    //       message: '伺服器錯誤'
-    //     })
-    //     next(err)
-    //   }
-
-    //   if (err) return next(err)
-    //   return res.redirect('/admins/index')
-    // })
-  },
   login: (req, res, next) => {
     try {
       const userData = req.user.toJSON()
@@ -54,16 +22,25 @@ const userController = {
           tokenExpires
         }
       })
-
-      // res.json({
-      //   status: 'success',
-      //   data: {
-      //     user: userData,
-      //     accessToken
-      //   }
-      // })
     } catch (err) {
       next(err)
+    }
+  },
+  signUp: async (req, res, next) => {
+    try {
+      const { name, email, password, passwordCheck } = req.body
+      if (!name || !email || !password || !passwordCheck) throw new Error('所有欄位都是必填！')
+      if (password !== passwordCheck) throw new Error('密碼與確認密碼不相符！')
+
+      await userServices.signUp(req, (err, data) => {
+        if (err) throw new Error(err.message)
+        res.status(200).json({ success: true, message: '成功註冊帳號！' })
+      })
+    } catch (err) {
+      if (err.message) {
+        return res.status(400).json({ success: false, message: err.message })
+      }
+      res.status(500).json({ success: false, message: '伺服器錯誤' })
     }
   }
 }
