@@ -11,12 +11,12 @@ const userController = {
       const refreshToken = jwt.sign(userData, process.env.JWT_SECRET_REFRESH_TOKEN, { expiresIn: '30d' }) // 簽發 JWT，效期為 30 天
       // tokenExpires為token過期時間 XXXX/XX/XX XX:XX:XX
       const tokenExpires = new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' })
-
       res.status(200).json({
         success: true,
         data: {
-          user: userData.name,
-          role: userData.isAdmin ? 'admin' : 'common',
+          userId: userData.id,
+          username: userData.name,
+          roles: userData.isAdmin ? ['admin', 'common'] : ['common'],
           accessToken,
           refreshToken,
           tokenExpires

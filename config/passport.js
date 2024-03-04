@@ -18,8 +18,6 @@ passport.use(new LocalStrategy(
   },
   // authenticate user
   (req, username, password, cb) => {
-    console.log('username: ', username)
-    console.log('password: ', password)
     User.findOne({ where: { email: username } })
       .then(user => {
         if (!user) return cb(null, false, { code: 500, message: '帳號或密碼輸入錯誤！' })
