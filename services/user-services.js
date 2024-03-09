@@ -37,8 +37,8 @@ const userServices = {
     try {
       const { id } = req.params
       const user = await User.findByPk(id)
-      if (user.name === 'admin') throw new Error('無法修改admin！')
       if (!user) throw new Error('找不到該使用者！')
+      if (user.name === 'admin') throw new Error('無法修改admin！')
       await user.update({ isAdmin: !user.isAdmin })
 
       return cb(null)
@@ -50,8 +50,9 @@ const userServices = {
     try {
       const { id } = req.params
       const user = await User.findByPk(id)
-      if (user.name === 'admin') throw new Error('無法刪除admin！')
       if (!user) throw new Error('找不到該使用者！')
+      if (user.name === 'admin') throw new Error('無法刪除admin！')
+
       await user.destroy()
 
       return cb(null)

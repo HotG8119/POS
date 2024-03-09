@@ -46,26 +46,30 @@ const userController = {
   getUsers: (req, res, next) => {
     try {
       userServices.getUsers(req, (err, data) => {
-        if (err) return next(err)
+        if (err) return res.status(400).json({ success: false, message: err.message })
         return res.status(200).json({ success: true, data })
       })
     } catch (err) {
-      if (err.message) {
-        return res.status(400).json({ success: false, message: err.message })
-      }
       res.status(500).json({ success: false, message: '伺服器錯誤' })
     }
   },
   patchUser: (req, res, next) => {
     try {
       userServices.patchUser(req, (err, data) => {
-        if (err) return next(err)
+        if (err) return res.status(400).json({ success: false, message: err.message })
         return res.status(200).json({ success: true, message: '更改成功' })
       })
     } catch (err) {
-      if (err.message) {
-        return res.status(400).json({ success: false, message: err.message })
-      }
+      res.status(500).json({ success: false, message: '伺服器錯誤' })
+    }
+  },
+  deleteUser: (req, res, next) => {
+    try {
+      userServices.deleteUser(req, (err, data) => {
+        if (err) return res.status(400).json({ success: false, message: err.message })
+        return res.status(200).json({ success: true, message: '刪除成功' })
+      })
+    } catch (err) {
       res.status(500).json({ success: false, message: '伺服器錯誤' })
     }
   }

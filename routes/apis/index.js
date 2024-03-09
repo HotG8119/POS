@@ -11,6 +11,7 @@ router.post('/login', passport.authenticate('local', { session: false }), userCo
 router.post('/signup', authenticated, authenticatedAdmin, userController.signUp)
 router.get('/users', authenticated, authenticatedAdmin, userController.getUsers)
 router.put('/users/:id', authenticated, authenticatedAdmin, userController.patchUser)
+router.delete('/users/:id', authenticated, authenticatedAdmin, userController.deleteUser)
 
 router.get('/products', authenticated, productController.getProducts)
 // router.get('/products', productController.getProducts)
