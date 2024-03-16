@@ -2,7 +2,6 @@ const routerController = {
   asyncRoutes: (req, res, next) => {
     const systemRoutes = {
       path: '/system',
-      redirect: '/system/users',
       meta: {
         icon: 'informationLine',
         title: '管理員後台',
@@ -11,9 +10,9 @@ const routerController = {
       },
       children: [
         {
-          path: '/system/users',
+          path: '/system/users/index',
           name: '所有使用者',
-          component: () => import('@/views/system/users/index.vue'),
+          // component: () => import('@/views/system/users/index.vue'),
           meta: {
             icon: 'mdi:user-outline',
             title: '使用者管理',
@@ -21,9 +20,9 @@ const routerController = {
           }
         },
         {
-          path: '/system/products',
+          path: '/system/products/index',
           name: '菜單管理',
-          component: () => import('@/views/system/products/index.vue'),
+          // component: () => import('@/views/system/products/index.vue'),
           meta: {
             icon: 'material-symbols:menu-book-outline',
             title: '商品管理',

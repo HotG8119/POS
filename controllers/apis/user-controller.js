@@ -53,10 +53,22 @@ const userController = {
       res.status(500).json({ success: false, message: '伺服器錯誤' })
     }
   },
-  patchUser: (req, res, next) => {
+  patchUserRole: (req, res, next) => {
     try {
-      userServices.patchUser(req, (err, data) => {
+      userServices.patchUserRole(req, (err, data) => {
         if (err) return res.status(400).json({ success: false, message: err.message })
+        return res.status(200).json({ success: true, message: '更改成功' })
+      })
+    } catch (err) {
+      res.status(500).json({ success: false, message: '伺服器錯誤' })
+    }
+  },
+  patchUserInfo: (req, res, next) => {
+    try {
+      console.log('you are in patchUserInfo')
+      userServices.patchUserInfo(req, (err, data) => {
+        console.log('err:', err)
+        if (err) return res.status(200).json({ success: false, message: err.message })
         return res.status(200).json({ success: true, message: '更改成功' })
       })
     } catch (err) {

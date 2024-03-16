@@ -33,13 +33,30 @@ const userServices = {
       return cb(err)
     }
   },
-  patchUser: async (req, cb) => {
+  patchUserRole: async (req, cb) => {
     try {
       const { id } = req.params
       const user = await User.findByPk(id)
       if (!user) throw new Error('找不到該使用者！')
       if (user.name === 'admin') throw new Error('無法修改admin！')
       await user.update({ isAdmin: !user.isAdmin })
+
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  patchUserInfo: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const { name, email } = req.body
+      if (!name || !email) throw new Error('所有欄位都是必填！')
+      const user = await User.findByPk(id)
+
+      if (!user) throw new Error('找不到該使用者！')
+      if (user.name === 'admin') throw new Error('無法修改admin！')
+
+      await user.update({ name, email })
 
       return cb(null)
     } catch (err) {
