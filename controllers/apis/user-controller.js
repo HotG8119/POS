@@ -28,17 +28,19 @@ const userController = {
   },
   signUp: async (req, res, next) => {
     try {
-      const { name, email, password, passwordCheck } = req.body
-      if (!name || !email || !password || !passwordCheck) throw new Error('所有欄位都是必填！')
-      if (password !== passwordCheck) throw new Error('密碼與確認密碼不相符！')
+      console.log('正在註冊帳號')
+      const { name, email, password } = req.body
+      if (!name || !email || !password) throw new Error('所有欄位都是必填！')
+      // if (password !== passwordCheck) throw new Error('密碼與確認密碼不相符！')
 
       await userServices.signUp(req, (err, data) => {
-        if (err) throw new Error(err.message)
+        if (err) return res.status(200).json({ success: false, message: err.message })
         res.status(200).json({ success: true, message: '成功註冊帳號！' })
       })
     } catch (err) {
+      console.log('err:', err.message)
       if (err.message) {
-        return res.status(400).json({ success: false, message: err.message })
+        return res.status(200).json({ success: false, message: err.message })
       }
       res.status(500).json({ success: false, message: '伺服器錯誤' })
     }
@@ -68,6 +70,16 @@ const userController = {
       console.log('you are in patchUserInfo')
       userServices.patchUserInfo(req, (err, data) => {
         console.log('err:', err)
+        if (err) return res.status(200).json({ success: false, message: err.message })
+        return res.status(200).json({ success: true, message: '更改成功' })
+      })
+    } catch (err) {
+      res.status(500).json({ success: false, message: '伺服器錯誤' })
+    }
+  },
+  patchUserPassword: (req, res, next) => {
+    try {
+      userServices.patchUserPassword(req, (err, data) => {
         if (err) return res.status(200).json({ success: false, message: err.message })
         return res.status(200).json({ success: true, message: '更改成功' })
       })

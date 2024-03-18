@@ -63,6 +63,23 @@ const userServices = {
       return cb(err)
     }
   },
+  patchUserPassword: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const { password } = req.body
+      if (!password) throw new Error('密碼是必填！')
+      const user = await User.findByPk(id)
+      if (!user) throw new Error('找不到該使用者！')
+      if (user.name === 'admin') throw new Error('無法修改admin！')
+
+      const hash = await bcrypt.hash(password, 10)
+      await user.update({ password: hash })
+
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
   deleteUser: async (req, cb) => {
     try {
       const { id } = req.params

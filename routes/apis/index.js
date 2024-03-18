@@ -12,6 +12,7 @@ router.post('/signup', authenticated, authenticatedAdmin, userController.signUp)
 router.get('/users', authenticated, authenticatedAdmin, userController.getUsers)
 router.put('/users/role/:id', authenticated, authenticatedAdmin, userController.patchUserRole)
 router.put('/users/info/:id', authenticated, authenticatedAdmin, userController.patchUserInfo)
+router.put('/users/password/:id', authenticated, authenticatedAdmin, userController.patchUserPassword)
 router.delete('/users/:id', authenticated, authenticatedAdmin, userController.deleteUser)
 
 router.get('/products', authenticated, productController.getProducts)
