@@ -20,14 +20,34 @@ const routerController = {
           }
         },
         {
-          path: '/system/products/index',
+          path: '/system/menu',
           name: '菜單管理',
           // component: () => import('@/views/system/products/index.vue'),
           meta: {
             icon: 'material-symbols:menu-book-outline',
             title: '商品管理',
             roles: ['admin']
-          }
+          },
+          children: [
+            {
+              path: '/system/menu/products/index',
+              name: '全部商品',
+              meta: {
+                icon: 'fluent-mdl2:product',
+                title: '全部商品',
+                roles: ['admin']
+              }
+            },
+            {
+              path: '/system/menu/categories/index',
+              name: '商品分類',
+              meta: {
+                icon: 'carbon:category',
+                title: '商品分類',
+                roles: ['admin']
+              }
+            }
+          ]
         }
       ]
     }

@@ -25,6 +25,28 @@ const productServices = {
     } catch (err) {
       return cb(err)
     }
+  },
+  getCategories: async (req, cb) => {
+    try {
+      const categories = await Category.findAll({
+        raw: true,
+        attributes: ['id', 'name']
+      })
+      return cb(null, { categories })
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  postCategory: async (req, cb) => {
+    try {
+      const { name, remark } = req.body
+      const category = await Category.findOne({ where: { name } })
+      if (category) throw new Error('分類已存在！')
+      await Category.create({ name, remark })
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
   }
 }
 
