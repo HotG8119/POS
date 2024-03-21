@@ -18,6 +18,8 @@ router.delete('/users/:id', authenticated, authenticatedAdmin, userController.de
 router.get('/menu/products', authenticated, productController.getProducts)
 router.post('/menu/categories/new', authenticated, productController.postCategory)
 router.post('/menu/categories', authenticated, productController.getCategories)
+router.delete('/menu/categories/:id', authenticated, productController.deleteCategory)
+router.put('/menu/categories/:id', authenticated, productController.editCategory)
 
 // router.get('/products', productController.getProducts)
 
