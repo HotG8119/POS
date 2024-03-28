@@ -16,10 +16,14 @@ router.put('/users/password/:id', authenticated, authenticatedAdmin, userControl
 router.delete('/users/:id', authenticated, authenticatedAdmin, userController.deleteUser)
 
 router.get('/menu/products', authenticated, productController.getProducts)
-router.post('/menu/categories/new', authenticated, productController.postCategory)
+router.post('/menu/products/list', authenticated, productController.getProductList)
+router.post('/menu/products/new', authenticated, authenticatedAdmin, productController.addProduct)
+router.delete('/menu/products/:id', authenticated, authenticatedAdmin, productController.deleteProduct)
+router.put('/menu/products/available/:id', authenticated, productController.switchAvailable)
+router.post('/menu/categories/new', authenticated, authenticatedAdmin, productController.postCategory)
 router.post('/menu/categories', authenticated, productController.getCategories)
-router.delete('/menu/categories/:id', authenticated, productController.deleteCategory)
-router.put('/menu/categories/:id', authenticated, productController.editCategory)
+router.delete('/menu/categories/:id', authenticated, authenticatedAdmin, productController.deleteCategory)
+router.put('/menu/categories/:id', authenticated, authenticatedAdmin, productController.editCategory)
 
 // router.get('/products', productController.getProducts)
 

@@ -27,6 +27,53 @@ const productServices = {
       return cb(err)
     }
   },
+  getProductList: async (req, cb) => {
+    try {
+      const products = await Product.findAll({
+        raw: true,
+        nest: true,
+        include: [{ model: Category, attributes: ['id', 'name'] }],
+        attributes: ['id', 'name', 'price', 'image', 'description', 'isAvailable']
+      })
+      return cb(null, { products })
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  addProduct: async (req, cb) => {
+    try {
+      const { name, price, CategoryId, isAvailable, description } = req.body
+      const product = await Product.findOne({ where: { name } })
+      if (product) throw new Error('商品已存在！')
+
+      await Product.create({ name, price, CategoryId, isAvailable, description })
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  deleteProduct: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const product = await Product.findByPk(id)
+      if (!product) throw new Error('找不到該商品！')
+      await product.destroy()
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  switchAvailable: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const product = await Product.findByPk(id)
+      if (!product) throw new Error('找不到該商品！')
+      await product.update({ isAvailable: !product.isAvailable })
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
   getCategories: async (req, cb) => {
     try {
       let categories = await Category.findAll({
