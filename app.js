@@ -43,10 +43,10 @@ app.use((req, res, next) => {
   next()
 })
 
-// const cors = require('cors')
-// app.use(cors({
-//   origin: 'http://localhost:3005'
-// }))
+const cors = require('cors')
+app.use(cors({
+  origin: `${process.env.FRONTEND_URL}`
+}))
 
 app.use(express.static('public'))
 app.use('/api', apis)

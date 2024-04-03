@@ -29,10 +29,11 @@ const adminServices = {
     }
   },
   postProduct: async (req, cb) => {
+    console.log('req.body', req.body)
     const { name, price, description, category, isAvailable } = req.body
     if (!name || !price) throw new Error('名稱與價錢為必填！')
     const { file } = req
-
+    console.log('multer file', file)
     try {
       const localFile = await imgurFileHandler(file)
       await Product.create({

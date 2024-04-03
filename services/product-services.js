@@ -35,18 +35,20 @@ const productServices = {
         include: [{ model: Category, attributes: ['id', 'name'] }],
         attributes: ['id', 'name', 'price', 'image', 'description', 'isAvailable']
       })
+
       return cb(null, { products })
     } catch (err) {
       return cb(err)
     }
   },
+
   addProduct: async (req, cb) => {
     try {
-      const { name, price, CategoryId, isAvailable, description } = req.body
+      const { name, price, categoryId, isAvailable, description, image } = req.body
       const product = await Product.findOne({ where: { name } })
       if (product) throw new Error('商品已存在！')
 
-      await Product.create({ name, price, CategoryId, isAvailable, description })
+      await Product.create({ name, price, categoryId, isAvailable, description, image })
       return cb(null)
     } catch (err) {
       return cb(err)
@@ -58,6 +60,19 @@ const productServices = {
       const product = await Product.findByPk(id)
       if (!product) throw new Error('找不到該商品！')
       await product.destroy()
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  editProduct: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const product = await Product.findByPk(id)
+      if (!product) throw new Error('找不到該商品！')
+      const { name, price, categoryId, isAvailable, description } = req.body
+      console.log('req.body:', req.body)
+      await product.update({ name, price, categoryId, isAvailable, description })
       return cb(null)
     } catch (err) {
       return cb(err)
