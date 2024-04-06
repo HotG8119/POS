@@ -18,15 +18,16 @@ const productController = {
     )
   },
   getProductList: (req, res, next) => {
+    const { pageSize, currentPage } = req.body
     productServices.getProductList(req, (err, data) => {
       if (err) return res.status(200).json({ success: false, message: err.message })
       return res.status(200).json({
         success: true,
         data: {
-          list: data.products,
-          total: data.products.length,
-          pageSize: 10,
-          currentPage: 1
+          list: data.products.rows,
+          total: data.products.count,
+          pageSize,
+          currentPage
         }
       })
     }

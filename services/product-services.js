@@ -1,5 +1,6 @@
 const dayjs = require('dayjs')
 const { Product, Category, Table } = require('../models')
+const { Op } = require('sequelize')
 
 const productServices = {
   getProducts: async (req, cb) => {
@@ -29,13 +30,25 @@ const productServices = {
   },
   getProductList: async (req, cb) => {
     try {
-      const products = await Product.findAll({
+      const { name: searchName, isAvailable: searchIsAvailable, categoryId: searchCategoryId } = req.body.form
+
+      const { pageSize, currentPage } = req.body
+
+      const products = await Product.findAndCountAll({
         raw: true,
         nest: true,
         include: [{ model: Category, attributes: ['id', 'name'] }],
-        attributes: ['id', 'name', 'price', 'image', 'description', 'isAvailable']
+        attributes: ['id', 'name', 'price', 'image', 'description', 'isAvailable'],
+        // 搜尋條件
+        where: {
+          ...searchName ? { name: { [Op.like]: `%${searchName}%` } } : {},
+          ...searchCategoryId ? { CategoryId: searchCategoryId } : {},
+          ...searchIsAvailable ? { isAvailable: searchIsAvailable } : {}
+        },
+        // 分頁
+        limit: pageSize,
+        offset: (currentPage - 1) * pageSize
       })
-
       return cb(null, { products })
     } catch (err) {
       return cb(err)
