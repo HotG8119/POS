@@ -103,14 +103,20 @@ const productServices = {
     }
   },
   getCategories: async (req, cb) => {
+    const { pageSize, currentPage } = req.body
     try {
-      let categories = await Category.findAll({
+      const queryOptions = {
         raw: true,
         attributes: ['id', 'name', 'createdAt', 'remark']
-      })
-      categories = categories.map(category => {
-        category.createdAt = dayjs(category.createdAt).format('YYYY-MM-DD')
-        return category
+      }
+      if (pageSize && currentPage) {
+        queryOptions.limit = pageSize
+        queryOptions.offset = (currentPage - 1) * pageSize
+      }
+
+      const categories = await Category.findAndCountAll(queryOptions)
+      categories.rows.forEach(category => {
+        category.createdAt = dayjs(category.createdAt).format('YYYY-MM-DD HH:mm:ss')
       })
       return cb(null, { categories })
     } catch (err) {

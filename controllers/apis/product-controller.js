@@ -109,16 +109,15 @@ const productController = {
       if (err) return res.status(200).json({ success: false, message: err.message })
 
       const { pageSize, currentPage } = req.body
-      data = {
-        list: data.categories,
-        total: data.categories.length,
-        pageSize,
-        currentPage
-      }
-
+      console.log('req.body:', req.body)
       return res.status(200).json({
         success: true,
-        data
+        data: {
+          list: data.categories.rows,
+          total: data.categories.count,
+          pageSize,
+          currentPage
+        }
       })
     }
     )
