@@ -6,6 +6,7 @@ const upload = require('../../middleware/multer')
 const userController = require('../../controllers/apis/user-controller')
 const productController = require('../../controllers/apis/product-controller')
 const routerController = require('../../controllers/apis/router-controller')
+const orderController = require('../../controllers/apis/order-controller')
 
 // router.use('/admin', authenticated, authenticatedAdmin, adminController.XXXX)
 router.post('/login', passport.authenticate('local', { session: false }), userController.login)
@@ -28,6 +29,8 @@ router.post('/menu/categories', authenticated, productController.getCategories)
 router.delete('/menu/categories/:id', authenticated, authenticatedAdmin, productController.deleteCategory)
 router.put('/menu/categories/:id', authenticated, authenticatedAdmin, productController.editCategory)
 
+router.post('/order/menuList', authenticated, orderController.getMenuList)
+router.post('/order', authenticated, orderController.postOrder)
 // router.get('/products', productController.getProducts)
 
 router.get('/getAsyncRoutes', authenticated, routerController.asyncRoutes)

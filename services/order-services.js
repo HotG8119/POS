@@ -1,8 +1,24 @@
 const dayjs = require('dayjs')
 const { Op } = require('sequelize')
-const { Order, Product, Table } = require('../models')
+const { Order, Product, Category, Table } = require('../models')
 
 const orderServices = {
+  getMenuList: async (req, cb) => {
+    try {
+      const products = await Product.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['id', 'name', 'price', 'image', 'isAvailable', 'description'],
+        include: [{ model: Category, attributes: ['id', 'name'] }],
+        order: [['id', 'ASC'], [Category, 'id', 'ASC']]
+      })
+      const categories = await Category.findAll({ raw: true, attributes: ['id', 'name'] })
+      const tables = await Table.findAll({ raw: true, attributes: ['id', 'name'] })
+      return cb(null, { products, categories, tables })
+    } catch (err) {
+      return cb(err)
+    }
+  },
   getOrder: async (req, cb) => {
     try {
       const orderId = Number(req.params.id)
@@ -93,6 +109,24 @@ const orderServices = {
         cartItems: cartItemsData,
         totalAmount,
         notes
+      })
+      return cb(null, order)
+    } catch (err) {
+      console.log(err)
+      return cb(err)
+    }
+  },
+  postOrderApi: async (req, cb) => {
+    try {
+      const { tableId, cartItems, totalAmount } = req.body
+      const cartItemsData = cartItems.map(item => ({
+        id: item.product.id,
+        quantity: item.orderQuantity
+      }))
+      const order = await Order.create({
+        tableId,
+        cartItems: cartItemsData,
+        totalAmount
       })
       return cb(null, order)
     } catch (err) {
