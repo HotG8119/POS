@@ -118,14 +118,7 @@ const orderController = {
       if (err) return next(err)
       try {
         const order = data.order
-        const products = data.products
-        // 將所有orders的cartItems用id找到對應的product，並加入name, price, image到cartItems
-        order.cartItems.forEach(item => {
-          const product = products.find(product => product.id.toString() === item.id)
-          item.name = product.name
-          item.price = Number(product.price)
-          item.amount = Number(item.price) * Number(item.quantity)
-        })
+        console.log('order')
         // 製作 linepay 的 body
         const packages = order.cartItems.map(item => ({
           id: item.id,

@@ -9,7 +9,7 @@ const authenticated = (req, res, next) => {
       // return res.status(401).json({ status: 'error', message: 'Unauthorized' })
       return res.status(200).json({
         success: true,
-        message: 'Unauthorized'
+        message: '權限不足！'
       })
     }
     req.user = user
@@ -23,7 +23,7 @@ const authenticatedAdmin = (req, res, next) => {
   }
   return res.status(200).json({
     success: false,
-    message: 'Unauthorized'
+    message: '權限不足！'
   })
 }
 

@@ -96,6 +96,40 @@ const orderServices = {
       return cb(err)
     }
   },
+  getTodayOrders: async (req, cb) => {
+    try {
+      const today = dayjs().format('YYYY-MM-DD')
+      const orders = await Order.findAll({
+        raw: true,
+        nest: true,
+        include: [{ model: Table, attributes: ['name'] }],
+        where: {
+          createdAt: {
+            [Op.between]: [`${today} 00:00:00`, `${today} 23:59:59`]
+          }
+        }
+      })
+
+      const products = await Product.findAll({
+        raw: true,
+        attributes: ['id', 'name', 'price']
+      })
+
+      orders.forEach(order => {
+        order.cartItems.forEach(item => {
+          const itemId = Number(item.id)
+          const product = products.find(product => product.id === itemId)
+          item.name = product.name
+          item.price = Number(product.price)
+        })
+        order.totalAmount = Number(order.totalAmount)
+      })
+      console.log('orders: ', orders)
+      return cb(null, orders)
+    } catch (err) {
+      return cb(err)
+    }
+  },
   postOrder: async (req, cb) => {
     try {
       const { tableId, cartItems, totalAmount, notes } = req.body
@@ -131,6 +165,33 @@ const orderServices = {
       return cb(null, order)
     } catch (err) {
       console.log(err)
+      return cb(err)
+    }
+  },
+  deleteOrder: async (req, cb) => {
+    try {
+      console.log('deleteOrder')
+      const { id } = req.params
+      const order = await Order.findByPk(id)
+      if (!order) throw new Error('此訂單不存在！')
+      await order.destroy()
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  updateOrder: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const { title } = req.body
+      console.log('title ', title)
+      const order = await Order.findByPk(id)
+      if (!order) throw new Error('此訂單不存在！')
+      if (title === '完成') {
+        await order.update({ completedAt: new Date() })
+      }
+      return cb(null)
+    } catch (err) {
       return cb(err)
     }
   },
@@ -272,7 +333,15 @@ const orderServices = {
         raw: true,
         attributes: ['id', 'name', 'price']
       })
-      return cb(null, { order, products })
+      // 將所有orders的cartItems用id找到對應的product，並加入name, price, image到cartItems
+      order.cartItems.forEach(item => {
+        const product = products.find(product => product.id === item.id)
+        console.log('product:', product)
+        item.name = product.name
+        item.price = Number(product.price)
+        item.amount = Number(item.price) * Number(item.quantity)
+      })
+      return cb(null, { order })
     } catch (err) {
       return cb(err)
     }
@@ -291,7 +360,20 @@ const orderServices = {
     try {
       const order = await Order.findByPk(orderId)
 
-      await order.update({ paymentMethod: 'linepay', paidAt: new Date() })
+      await order.update({ paymentMethod: 'LinePay', paidAt: new Date() })
+      return cb(null)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  payOrderByCash: async (req, cb) => {
+    try {
+      const { id } = req.params
+      const order = await Order.findByPk(id)
+      if (!order) throw new Error('此訂單不存在！')
+      if (!order.completedAt) throw new Error('此訂單尚未完成！')
+      if (order.paymentMethod) throw new Error('此訂單已付款！')
+      await order.update({ paymentMethod: 'cash', paidAt: new Date() })
       return cb(null)
     } catch (err) {
       return cb(err)
