@@ -53,7 +53,6 @@ const orderServices = {
     try {
       const startDate = dayjs().startOf('day').toDate()
       const endDate = dayjs().endOf('day').toDate()
-
       // 找到所有 completed_at != null 的 order 並由新到舊排序
       const orders = await Order.findAll({
         raw: true,
@@ -98,11 +97,12 @@ const orderServices = {
   },
   getTodayOrders: async (req, cb) => {
     try {
-      const { status } = req.body
+      const { pageSize, currentPage } = req.body
+      const { status } = req.body.form
       const statusKey = getStatusKey(status)
-
       const today = dayjs().format('YYYY-MM-DD')
-      const orders = await Order.findAll({
+
+      const orders = await Order.findAndCountAll({
         raw: true,
         nest: true,
         include: [{ model: Table, attributes: ['name'] }],
@@ -111,24 +111,26 @@ const orderServices = {
           createdAt: {
             [Op.between]: [`${today} 00:00:00`, `${today} 23:59:59`]
           }
-        }
+        },
+        limit: pageSize,
+        offset: (currentPage - 1) * pageSize
       })
-
+      console.log('orders.count', orders.count)
       const products = await Product.findAll({
         raw: true,
         attributes: ['id', 'name', 'price']
       })
 
-      orders.forEach(order => {
+      orders.rows.forEach(order => {
         order.cartItems.forEach(item => {
           const itemId = Number(item.id)
           const product = products.find(product => product.id === itemId)
           item.name = product.name
-          item.price = Number(product.price)
+          item.price = product.price
         })
         order.totalAmount = Number(order.totalAmount)
       })
-      console.log('orders: ', orders)
+
       return cb(null, orders)
     } catch (err) {
       return cb(err)

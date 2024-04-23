@@ -24,8 +24,8 @@ const productController = {
       return res.status(200).json({
         success: true,
         data: {
-          list: data.products.rows,
-          total: data.products.count,
+          list: data.rows,
+          total: data.count,
           pageSize,
           currentPage
         }

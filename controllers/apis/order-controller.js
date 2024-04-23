@@ -1,18 +1,18 @@
 const orderServices = require('../../services/order-services')
 
-const axios = require('axios')
-const { HmacSHA256 } = require('crypto-js')
-const Base64 = require('crypto-js/enc-base64')
+// const axios = require('axios')
+// const { HmacSHA256 } = require('crypto-js')
+// const Base64 = require('crypto-js/enc-base64')
 
-const {
-  LINEPAY_VERSION,
-  LINEPAY_SITE,
-  LINEPAY_CHANNEL_ID,
-  LINEPAY_CHANNEL_SECRET,
-  LINEPAY_RETURN_HOST,
-  LINEPAY_RETURN_CONFIRM_URL,
-  LINEPAY_RETURN_CANCEL_URL
-} = process.env
+// const {
+//   LINEPAY_VERSION,
+//   LINEPAY_SITE,
+//   LINEPAY_CHANNEL_ID,
+//   LINEPAY_CHANNEL_SECRET,
+//   LINEPAY_RETURN_HOST,
+//   LINEPAY_RETURN_CONFIRM_URL,
+//   LINEPAY_RETURN_CANCEL_URL
+// } = process.env
 
 const orderController = {
   getMenuList: (req, res, next) => {
@@ -60,11 +60,19 @@ const orderController = {
     })
   },
   getTodayOrders: (req, res, next) => {
+    const { pageSize, currentPage } = req.body
     orderServices.getTodayOrders(req, (err, data) => {
       if (err) return res.status(200).json({ success: false, message: err.message })
       return res.status(200).json({
         success: true,
-        data
+        data: {
+          list: data.rows,
+          total: data.count,
+          pageSize,
+          currentPage
+
+        }
+
       })
     })
   },
@@ -105,41 +113,41 @@ const orderController = {
   }
 }
 
-function createLinePayBody (order) {
-  const packages = order.cartItems.map(item => ({
-    id: item.id,
-    amount: Number(item.amount),
-    products: [{
-      name: item.name,
-      quantity: Number(item.quantity),
-      price: Number(item.price)
-    }]
-  }))
+// function createLinePayBody (order) {
+//   const packages = order.cartItems.map(item => ({
+//     id: item.id,
+//     amount: Number(item.amount),
+//     products: [{
+//       name: item.name,
+//       quantity: Number(item.quantity),
+//       price: Number(item.price)
+//     }]
+//   }))
 
-  return {
-    amount: Number(order.totalAmount),
-    currency: 'TWD',
-    orderId: order.id.toString(),
-    packages: packages,
-    redirectUrls: {
-      confirmUrl: LINEPAY_RETURN_HOST + LINEPAY_RETURN_CONFIRM_URL,
-      cancelUrl: LINEPAY_RETURN_HOST + LINEPAY_RETURN_CANCEL_URL
-    }
-  }
-}
+//   return {
+//     amount: Number(order.totalAmount),
+//     currency: 'TWD',
+//     orderId: order.id.toString(),
+//     packages: packages,
+//     redirectUrls: {
+//       confirmUrl: LINEPAY_RETURN_HOST + LINEPAY_RETURN_CONFIRM_URL,
+//       cancelUrl: LINEPAY_RETURN_HOST + LINEPAY_RETURN_CANCEL_URL
+//     }
+//   }
+// }
 
-function createSignature (uri, linepayBody) {
-  const nonce = parseInt(new Date().getTime() / 1000)
-  const string = LINEPAY_CHANNEL_SECRET + '/' + LINEPAY_VERSION + uri + JSON.stringify(linepayBody) + nonce
-  const signature = Base64.stringify(HmacSHA256(string, LINEPAY_CHANNEL_SECRET))
-  // 製作 linepay 的 headers
-  const headers = {
-    'Content-Type': 'application/json',
-    'X-LINE-ChannelId': LINEPAY_CHANNEL_ID,
-    'X-LINE-Authorization-Nonce': nonce,
-    'X-LINE-Authorization': signature
-  }
-  return headers
-}
+// function createSignature (uri, linepayBody) {
+//   const nonce = parseInt(new Date().getTime() / 1000)
+//   const string = LINEPAY_CHANNEL_SECRET + '/' + LINEPAY_VERSION + uri + JSON.stringify(linepayBody) + nonce
+//   const signature = Base64.stringify(HmacSHA256(string, LINEPAY_CHANNEL_SECRET))
+//   // 製作 linepay 的 headers
+//   const headers = {
+//     'Content-Type': 'application/json',
+//     'X-LINE-ChannelId': LINEPAY_CHANNEL_ID,
+//     'X-LINE-Authorization-Nonce': nonce,
+//     'X-LINE-Authorization': signature
+//   }
+//   return headers
+// }
 
 module.exports = orderController

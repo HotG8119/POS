@@ -49,7 +49,7 @@ const productServices = {
         limit: pageSize,
         offset: (currentPage - 1) * pageSize
       })
-      return cb(null, { products })
+      return cb(null, products)
     } catch (err) {
       return cb(err)
     }
