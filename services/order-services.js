@@ -98,12 +98,16 @@ const orderServices = {
   },
   getTodayOrders: async (req, cb) => {
     try {
+      const { status } = req.body
+      const statusKey = getStatusKey(status)
+
       const today = dayjs().format('YYYY-MM-DD')
       const orders = await Order.findAll({
         raw: true,
         nest: true,
         include: [{ model: Table, attributes: ['name'] }],
         where: {
+          ...statusKey,
           createdAt: {
             [Op.between]: [`${today} 00:00:00`, `${today} 23:59:59`]
           }
@@ -378,6 +382,19 @@ const orderServices = {
     } catch (err) {
       return cb(err)
     }
+  }
+}
+
+function getStatusKey (status) {
+  switch (status) {
+    case '未完成':
+      return { completedAt: null, paidAt: null }
+    case '未付款':
+      return { completedAt: { [Op.not]: null }, paidAt: null }
+    case '已完成':
+      return { completedAt: { [Op.not]: null }, paidAt: { [Op.not]: null } }
+    default:
+      return {}
   }
 }
 

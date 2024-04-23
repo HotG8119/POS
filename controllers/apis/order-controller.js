@@ -62,7 +62,6 @@ const orderController = {
   getTodayOrders: (req, res, next) => {
     orderServices.getTodayOrders(req, (err, data) => {
       if (err) return res.status(200).json({ success: false, message: err.message })
-      console.log('data', data[0])
       return res.status(200).json({
         success: true,
         data
