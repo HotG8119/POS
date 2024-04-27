@@ -97,6 +97,7 @@ const orderServices = {
   },
   getTodayOrders: async (req, cb) => {
     try {
+      console.log('getTodayOrders')
       const { pageSize, currentPage } = req.body
       const { status } = req.body.form
       const statusKey = getStatusKey(status)
@@ -115,20 +116,16 @@ const orderServices = {
         limit: pageSize,
         offset: (currentPage - 1) * pageSize
       })
-      console.log('orders.count', orders.count)
-      const products = await Product.findAll({
+      const orderIds = orders.rows.map(order => order.id)
+      const orderProducts = await OrderProduct.findAll({
         raw: true,
-        attributes: ['id', 'name', 'price']
+        nest: true,
+        include: [
+          { model: Product, attributes: ['id', 'name', 'price'] }],
+        where: { orderId: orderIds }
       })
-
       orders.rows.forEach(order => {
-        order.cartItems.forEach(item => {
-          const itemId = Number(item.id)
-          const product = products.find(product => product.id === itemId)
-          item.name = product.name
-          item.price = product.price
-        })
-        order.totalAmount = Number(order.totalAmount)
+        order.cartItems = orderProducts.filter(item => item.orderId === order.id)
       })
 
       return cb(null, orders)
@@ -192,11 +189,11 @@ const orderServices = {
     try {
       const { id } = req.params
       const { title } = req.body
-      console.log('title ', title)
       const order = await Order.findByPk(id)
       if (!order) throw new Error('此訂單不存在！')
       if (title === '完成') {
         await order.update({ completedAt: new Date() })
+        await OrderProduct.update({ status: 'completed' }, { where: { orderId: id } })
       }
       return cb(null)
     } catch (err) {
