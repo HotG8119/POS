@@ -110,6 +110,16 @@ const orderController = {
     //     }
     //   })
     // }
+  },
+  getCloseoutOrders: (req, res, next) => {
+    console.log('GGGG')
+    orderServices.getCloseoutOrders(req, (err, data) => {
+      if (err) return res.status(200).json({ success: false, message: err.message })
+      return res.status(200).json({
+        success: true,
+        data
+      })
+    })
   }
 }
 

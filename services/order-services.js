@@ -384,6 +384,30 @@ const orderServices = {
     } catch (err) {
       return cb(err)
     }
+  },
+  getCloseoutOrders: async (req, cb) => {
+    try {
+      console.log('req.body', req.body)
+      const { timeValue } = req.body
+      console.log('timeValue', timeValue)
+      const startDate = timeValue[0]
+      const endDate = timeValue[1]
+      console.log('startDate', startDate)
+      console.log('endDate', endDate)
+
+      const orders = await Order.findAll({
+        raw: true,
+        nest: true,
+        where: {
+          paid_at: { [Op.not]: null },
+          created_at: { [Op.between]: [startDate, endDate] }
+        }
+      })
+      console.log('orders', orders)
+      return cb(null, orders)
+    } catch (err) {
+      return cb(err)
+    }
   }
 }
 

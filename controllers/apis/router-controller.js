@@ -52,10 +52,31 @@ const routerController = {
       ]
     }
 
+    const closeoutRoutes = {
+      path: '/closeout',
+      redirect: '/closeout/index',
+      meta: {
+        icon: 'uil:bill',
+        title: '訂單結算',
+        // showLink: false,
+        roles: ['admin']
+      },
+      children: [
+        {
+          path: '/closeout/index',
+          name: '結算訂單',
+          component: () => import('@/views/closeout/index.vue'),
+          meta: {
+            title: '結算訂單'
+          }
+        }
+      ]
+    }
+
     res.json({
       success: true,
       message: '獲取動態路由成功',
-      data: [systemRoutes]
+      data: [systemRoutes, closeoutRoutes]
     })
   }
 }

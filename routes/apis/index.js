@@ -35,6 +35,8 @@ router.post('/order/today', authenticated, orderController.getTodayOrders)
 router.delete('/order/:id', authenticated, authenticatedAdmin, orderController.deleteOrder)
 router.put('/order/pay/:id', authenticated, orderController.payOrder)
 router.put('/order/:id', authenticated, orderController.updateOrder)
+
+router.post('/order/closeout', authenticated, orderController.getCloseoutOrders)
 // router.get('/products', productController.getProducts)
 
 router.get('/getAsyncRoutes', authenticated, routerController.asyncRoutes)
