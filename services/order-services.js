@@ -179,6 +179,7 @@ const orderServices = {
       const { id } = req.params
       const order = await Order.findByPk(id)
       if (!order) throw new Error('此訂單不存在！')
+      await OrderProduct.destroy({ where: { orderId: id } })
       await order.destroy()
       return cb(null)
     } catch (err) {
