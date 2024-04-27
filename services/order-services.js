@@ -194,7 +194,7 @@ const orderServices = {
       if (!order) throw new Error('此訂單不存在！')
       if (title === '完成') {
         await order.update({ completedAt: new Date() })
-        await OrderProduct.update({ status: 'completed' }, { where: { orderId: id } })
+        await OrderProduct.update({ status: 'completed', completedAt: new Date() }, { where: { orderId: id } })
       }
       return cb(null)
     } catch (err) {
