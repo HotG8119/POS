@@ -1,6 +1,6 @@
 const dayjs = require('dayjs')
 const { Op } = require('sequelize')
-const { Order, Product, Category, Table } = require('../models')
+const { Order, OrderProduct, Product, Category, Table } = require('../models')
 
 const orderServices = {
   getMenuList: async (req, cb) => {
@@ -157,17 +157,19 @@ const orderServices = {
     }
   },
   postOrderApi: async (req, cb) => {
+    const { tableId, cartItems, totalAmount } = req.body
     try {
-      const { tableId, cartItems, totalAmount } = req.body
-      const cartItemsData = cartItems.map(item => ({
-        id: item.product.id,
-        quantity: item.orderQuantity
-      }))
       const order = await Order.create({
         tableId,
-        cartItems: cartItemsData,
         totalAmount
       })
+      const orderProducts = cartItems.map(item => ({
+        orderId: order.id,
+        productId: item.product.id,
+        quantity: item.orderQuantity
+      }))
+      await OrderProduct.bulkCreate(orderProducts)
+
       return cb(null, order)
     } catch (err) {
       console.log(err)
