@@ -54,7 +54,6 @@ const routerController = {
 
     const closeoutRoutes = {
       path: '/closeout',
-      redirect: '/closeout/index',
       meta: {
         icon: 'uil:bill',
         title: '訂單結算',
@@ -65,7 +64,7 @@ const routerController = {
         {
           path: '/closeout/index',
           name: '結算訂單',
-          component: () => import('@/views/closeout/index.vue'),
+          // component: () => import('@/views/closeout/index.vue'),
           meta: {
             title: '結算訂單'
           }

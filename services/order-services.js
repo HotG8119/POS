@@ -193,6 +193,7 @@ const orderServices = {
       const order = await Order.findByPk(id)
       if (!order) throw new Error('此訂單不存在！')
       if (title === '完成') {
+        console.log('完成訂單')
         await order.update({ completedAt: new Date() })
         await OrderProduct.update({ status: 'completed', completedAt: new Date() }, { where: { orderId: id } })
       }
@@ -249,6 +250,52 @@ const orderServices = {
 
       await order.update({ completedAt: new Date() })
       return cb(null, order)
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  getPrepareOrders: async (req, cb) => {
+    try {
+      const orders = await Order.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['id', 'createdAt'],
+        where: { completedAt: null, createdAt: { [Op.gt]: dayjs().startOf('day').toDate() } },
+        include: [
+          { model: Table, attributes: ['name'] },
+          {
+            model: OrderProduct,
+            attributes: ['id', 'quantity', 'status'],
+            include: [{ model: Product, attributes: ['name'] }]
+          }]
+      })
+      // 將數據合併
+      const mergedOrders = {}
+
+      orders.forEach(order => {
+        const { id, createdAt, Table, OrderProducts } = order
+
+        if (!mergedOrders[id]) {
+          mergedOrders[id] = {
+            id,
+            createdAt: dayjs(createdAt).format('HH:mm'),
+            tableName: Table.name,
+            OrderProducts: []
+          }
+        }
+
+        mergedOrders[id].OrderProducts.push({
+          id: OrderProducts.id,
+          name: OrderProducts.Product.name,
+          quantity: OrderProducts.quantity,
+          status: OrderProducts.status
+        })
+      })
+
+      // 轉換物件回陣列
+      const finalOrdersArray = Object.values(mergedOrders)
+
+      return cb(null, finalOrdersArray)
     } catch (err) {
       return cb(err)
     }
@@ -387,24 +434,106 @@ const orderServices = {
   },
   getCloseoutOrders: async (req, cb) => {
     try {
-      console.log('req.body', req.body)
-      const { timeValue } = req.body
-      console.log('timeValue', timeValue)
-      const startDate = timeValue[0]
-      const endDate = timeValue[1]
-      console.log('startDate', startDate)
-      console.log('endDate', endDate)
+      let { timeValue: [startDate, endDate] } = req.body
+      startDate = dayjs(startDate).startOf('day').toDate()
+      endDate = dayjs(endDate).endOf('day').toDate()
 
-      const orders = await Order.findAll({
+      const orders = await Order.findAndCountAll({
         raw: true,
-        nest: true,
         where: {
-          paid_at: { [Op.not]: null },
-          created_at: { [Op.between]: [startDate, endDate] }
+          paidAt: { [Op.not]: null },
+          createdAt: { [Op.between]: [startDate, endDate] }
         }
       })
-      console.log('orders', orders)
-      return cb(null, orders)
+
+      const periodOrdersData = {
+        totalCount: orders.count,
+        totalAmount: orders.rows.reduce((total, order) => total + Number(order.totalAmount), 0)
+      }
+
+      function ordersDataToDailyTotals (orders) {
+        const summary = {}
+
+        // 整理訂單資料
+        orders.rows.forEach(order => {
+          const date = dayjs(order.createdAt).format('MM-DD') // 取得日期並格式化為YYYY-MM-DD
+          if (!summary[date]) {
+            summary[date] = {
+              totalAmount: 0,
+              orderCount: 0
+            }
+          }
+          summary[date].totalAmount += parseInt(order.totalAmount, 10)
+          summary[date].orderCount++ // 計算當日訂單數量
+        })
+
+        // 分別提取日期、總金額和訂單數量
+        const dateData = Object.keys(summary).sort() // 日期排序
+        const amountData = dateData.map(date => summary[date].totalAmount)
+        const countData = dateData.map(date => summary[date].orderCount)
+
+        return {
+          dateData,
+          amountData,
+          countData
+        }
+      }
+
+      const dailyTotals = ordersDataToDailyTotals(orders)
+
+      const orderProducts = await OrderProduct.findAll({
+        raw: true,
+        nest: true,
+        attributes: ['quantity'],
+        include: [
+          {
+            model: Product,
+            attributes: ['id', 'name', 'price']
+          },
+          {
+            model: Order,
+            attributes: ['id', 'paidAt'],
+            where: {
+              paidAt: { [Op.not]: null },
+              createdAt: { [Op.between]: [startDate, endDate] }
+            }
+          }
+        ]
+      })
+
+      const productCounts = orderProducts.reduce((acc, item) => {
+        let { id, name, price } = item.Product
+        price = Number(price)
+        const { paidAt } = item.Order
+        if (acc[id]) {
+          acc[id].quantity += item.quantity
+        } else {
+          acc[id] = { id, name, price, quantity: item.quantity }
+        }
+
+        if (!acc[id].paidAt || acc[id].paidAt < paidAt) {
+          acc[id].paidAt = paidAt
+        }
+        return acc
+      }, {})
+
+      const productCountsArray = Object.values(productCounts)
+
+      productCountsArray.sort((a, b) => b.quantity - a.quantity || a.id - b.id)
+      console.log('productCountsArray:', productCountsArray)
+      return cb(null, { periodOrdersData, dailyTotals, productCountsArray })
+    } catch (err) {
+      return cb(err)
+    }
+  },
+  putOrderProduct: async (req, cb) => {
+    try {
+      const { orderProductId } = req.params
+      const { status } = req.body
+      const orderProduct = await OrderProduct.findByPk(orderProductId)
+      if (!orderProduct) throw new Error('此訂單不存在！')
+      await orderProduct.update({ status })
+      return cb(null)
     } catch (err) {
       return cb(err)
     }

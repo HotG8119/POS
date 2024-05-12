@@ -31,9 +31,10 @@ const orderController = {
   postOrder: (req, res, next) => {
     const { tableId, cartItems } = req.body
     if (!tableId || !cartItems) return res.status(400).json({ success: false, message: '請選擇桌號或餐點！' })
-
+    const { io } = req.app
     orderServices.postOrderApi(req, (err, data) => {
       if (err) return res.status(200).json({ success: false, message: err.message })
+      io.emit('newOrder')
       return res.status(200).json({
         success: true,
         message: '成功送出訂單！',
@@ -112,12 +113,29 @@ const orderController = {
     // }
   },
   getCloseoutOrders: (req, res, next) => {
-    console.log('GGGG')
     orderServices.getCloseoutOrders(req, (err, data) => {
       if (err) return res.status(200).json({ success: false, message: err.message })
       return res.status(200).json({
         success: true,
         data
+      })
+    })
+  },
+  getPrepareOrders: (req, res, next) => {
+    orderServices.getPrepareOrders(req, (err, data) => {
+      if (err) return res.status(200).json({ success: false, message: err.message })
+      return res.status(200).json({
+        success: true,
+        data
+      })
+    })
+  },
+  putOrderProduct: (req, res, next) => {
+    orderServices.putOrderProduct(req, (err, data) => {
+      if (err) return res.status(200).json({ success: false, message: err.message })
+      return res.status(200).json({
+        success: true,
+        message: '成功更新訂單！'
       })
     })
   }

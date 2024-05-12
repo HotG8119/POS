@@ -7,6 +7,7 @@ const userController = require('../../controllers/apis/user-controller')
 const productController = require('../../controllers/apis/product-controller')
 const routerController = require('../../controllers/apis/router-controller')
 const orderController = require('../../controllers/apis/order-controller')
+const socketController = require('../../controllers/apis/socket-controller')
 
 // router.use('/admin', authenticated, authenticatedAdmin, adminController.XXXX)
 router.post('/login', passport.authenticate('local', { session: false }), userController.login)
@@ -29,16 +30,19 @@ router.post('/menu/categories', authenticated, productController.getCategories)
 router.delete('/menu/categories/:id', authenticated, authenticatedAdmin, productController.deleteCategory)
 router.put('/menu/categories/:id', authenticated, authenticatedAdmin, productController.editCategory)
 
+router.get('/order/preparing', authenticated, orderController.getPrepareOrders)
 router.post('/order/menuList', authenticated, orderController.getMenuList)
 router.post('/order', authenticated, orderController.postOrder)
 router.post('/order/today', authenticated, orderController.getTodayOrders)
 router.delete('/order/:id', authenticated, authenticatedAdmin, orderController.deleteOrder)
 router.put('/order/pay/:id', authenticated, orderController.payOrder)
-router.put('/order/:id', authenticated, orderController.updateOrder)
 
 router.post('/order/closeout', authenticated, orderController.getCloseoutOrders)
+router.put('/order/orderProduct/:orderProductId', authenticated, orderController.putOrderProduct)
+router.put('/order/:id', authenticated, orderController.updateOrder)
 // router.get('/products', productController.getProducts)
 
+router.get('/socket/orderProduct', authenticated, socketController.getOrderProductSocketConnect)
 router.get('/getAsyncRoutes', authenticated, routerController.asyncRoutes)
 
 module.exports = router
