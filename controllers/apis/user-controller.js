@@ -46,10 +46,19 @@ const userController = {
     }
   },
   getUsers: (req, res, next) => {
+    const { pageSize, currentPage } = req.body
     try {
       userServices.getUsers(req, (err, data) => {
         if (err) return res.status(400).json({ success: false, message: err.message })
-        return res.status(200).json({ success: true, data })
+        return res.status(200).json({
+          success: true,
+          data: {
+            list: data.rows,
+            total: data.count,
+            pageSize,
+            currentPage
+          }
+        })
       })
     } catch (err) {
       res.status(500).json({ success: false, message: '伺服器錯誤' })

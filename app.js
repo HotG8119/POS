@@ -30,7 +30,7 @@ app.use(cors(corsOptions))
 // Socket.IO setup with CORS
 const io = new Server(server, { cors: corsOptions })
 app.io = io
-
+console.log('Socket.IO server is running', io.engine.opts.cors)
 io.on('connection', socket => {
   console.log('A user connected')
 

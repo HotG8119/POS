@@ -21,14 +21,17 @@ const userServices = {
     }
   },
   getUsers: async (req, cb) => {
+    const { pageSize, currentPage } = req.body
     try {
       // 從user資料表取出所有使用者資料 包含name email isAdmin
-      const users = await User.findAll({
+      const users = await User.findAndCountAll({
         raw: true,
-        attributes: ['id', 'name', 'email', 'isAdmin']
+        attributes: ['id', 'name', 'email', 'isAdmin'],
+        limit: pageSize,
+        offset: (currentPage - 1) * pageSize
       })
 
-      return cb(null, { users })
+      return cb(null, users)
     } catch (err) {
       return cb(err)
     }
