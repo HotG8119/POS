@@ -3,9 +3,9 @@
 </div>
 <form class="form-signin" action="/login" method="POST">
     <div class="form-row mb-3">
-        <label class="form-label" for="email">信箱</label>
-        <input class="form-control" id="email" type="text" name="email" class="form-control" placeholder="Email"
-            required autofocus>
+        <label class="form-label" for="username">信箱</label>
+        <input class="form-control" id="username" type="text" name="username" class="form-control"
+            placeholder="username" required autofocus>
 
     </div>
     <div class="form-row mb-3">
@@ -18,7 +18,7 @@
 <div class="mb-4 text-center">
     測試帳號：admin@example.com
     <br>
-    測試密碼：123
+    測試密碼：admin123
     <br>
     <button id="add-to-form">填入帳號</button>
 </div>
@@ -26,8 +26,8 @@
 <script>
     const addToFormButton = document.getElementById('add-to-form');
     addToFormButton.addEventListener('click', () => {
-        document.getElementById('email').value = 'admin@example.com'
-        document.getElementById('password').value = '123'
+        document.getElementById('username').value = 'admin@example.com'
+        document.getElementById('password').value = 'admin123'
     })
 
 </script>

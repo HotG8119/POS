@@ -15,7 +15,7 @@ module.exports = {
           name: faker.commerce.productName(),
           description: faker.commerce.productDescription(),
           price: faker.commerce.price(),
-          image: `https://loremflickr.com/320/240/food/?lock=${Math.random() * 100}`,
+          image: `https://loremflickr.com/320/240/food/?lock=${Math.floor(Math.random() * 100)}`,
           is_available: Math.random() > 0.1,
           created_at: new Date(),
           updated_at: new Date(),
